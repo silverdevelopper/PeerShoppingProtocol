@@ -1,33 +1,45 @@
 import socket
-import threading
 
-def main():
-    host, port = "0.0.0.0", 23456
 
-    all_threads = []
-    
-    with socket.socket() as l_socket:
-        l_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        l_socket.bind((host, port))
-        l_socket.listen(0)
-        l_socket.settimeout(1)
+class Peer:
+    def __init__(
+        self,
+        uuid: str,
+        ip: str,
+        port: int,
+        geoloc: str,
+        node_type: str,
+        keywords: str,
+    ):
+        self.uuid = uuid
+        self.ip = ip
+        self.port = port
+        self.geoloc = geoloc
+        self.node_type = node_type
+        self.keywords = keywords
 
-        thread_num = 0
+    def to_string(self, prefix=""):
+        return f"{prefix}::{self.uuid}::{self.ip}::{self.port}::{self.geoloc}::{self.node_type}::{self.keywords}"
 
-        print("SERVER IS STARTING...")
-        while True:
-            try:
-                c_soc, c_addr = l_socket.accept()
-                print("A NEW CLIENT HAS CONNECTED: ", c_addr)
-                c_soc.settimeout(.8)
 
-                
-                thread_num += 1
-            except socket.timeout:
-                continue
-        
-        for thread in all_threads:
-            thread.join()
+class Tracker:
+    __peers: dict[Peer] = dict()
 
-if __name__ == '__main__':
-    main()
+    def __init__(self, uuid: str):
+        self.socket = socket
+        self.uuid = uuid
+
+    def register(self, request: str):
+        tokens = request.split("::")
+
+        if len(tokens) < 7:
+            return "RN"
+
+        _, uuid, ip, port, geoloc, node_type, keywords = tokens
+        peer = Peer(uuid, ip, port, geoloc, node_type, keywords)
+        self.__peers[uuid] = peer
+
+        return "RO"
+
+    def get_peers(self):
+        return self.__peers.values()
