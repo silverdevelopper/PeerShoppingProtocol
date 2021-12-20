@@ -19,32 +19,36 @@ def main():
             try:
                 # TODO this should run on a separate thread
                 c_soc, c_addr = l_socket.accept()
-
-                c_soc.send(f"HE::{tracker.uuid}".encode())
-
-                while True:
-                    request = c_soc.recv(1024).decode().strip()
-                    request_type = request.split("::")[0]
-
-                    if request_type == "IG":
-                        c_soc.send(f"OG::{tracker.uuid}".encode())
-                    elif request_type == "QU":
-                        c_soc.send("BY".encode())
-                        c_soc.close()
-                        break
-                    elif request_type == "RG":
-                        response = tracker.register(request)
-                        c_soc.send(response.encode())
-                    elif request_type == "CS":
-                        peers = tracker.get_peers()
-
-                        c_soc.send("CO::BEGIN".encode())
-                        for peer in peers:
-                            c_soc.send(peer.to_string(prefix="CO").encode())
-                        c_soc.send("CO::END".encode())
+                handle_connection(c_soc)
 
             except socket.timeout:
                 continue
+
+
+def handle_connection(c_soc: socket.socket):
+    c_soc.send(f"HE::{tracker.uuid}".encode())
+    is_registered = False
+
+    while True:
+        request = c_soc.recv(1024).decode().strip()
+        request_type = request.split("::")[0]
+
+        if request_type == "IG":
+            c_soc.send(f"OG::{tracker.uuid}".encode())
+        elif request_type == "QU":
+            c_soc.send("BY".encode())
+            c_soc.close()
+            break
+        elif request_type == "RG":
+            response = tracker.register(request)
+            c_soc.send(response.encode())
+        elif request_type == "CS":
+            peers = tracker.get_peers()
+
+            c_soc.send("CO::BEGIN".encode())
+            for peer in peers:
+                c_soc.send(peer.to_string(prefix="CO").encode())
+            c_soc.send("CO::END".encode())
 
 
 if __name__ == "__main__":
