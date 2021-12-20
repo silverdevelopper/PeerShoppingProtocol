@@ -1,8 +1,23 @@
 from base_model import BaseModel
+
+
 class PeerModel(BaseModel):
-    # CO:<uuid>::<ip>:<port>::<geoloc>::<type>::<keywords>
-    def __init__(self,name:str,geoloc,uuid,ip,port:int,node_type,keywords:str = ""):
-        super().__init__(name,keywords)
+    def __init__(
+        self,
+        uuid: str,
+        ip: str,
+        port: int,
+        geoloc: str,
+        node_type: str,
+        keywords: str,
+    ):
+        super().__init__(uuid, keywords)
+        self.uuid = uuid
+        self.ip = ip
+        self.port = port
         self.geoloc = geoloc
         self.node_type = node_type
-        self.uuid = uuid
+        self.keywords = keywords
+
+    def to_string(self, prefix=""):
+        return f"{prefix}::{self.uuid}::{self.ip}::{self.port}::{self.geoloc}::{self.node_type}::{self.keywords}"

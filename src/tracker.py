@@ -1,29 +1,9 @@
 import socket
-
-
-class Peer:
-    def __init__(
-        self,
-        uuid: str,
-        ip: str,
-        port: int,
-        geoloc: str,
-        node_type: str,
-        keywords: str,
-    ):
-        self.uuid = uuid
-        self.ip = ip
-        self.port = port
-        self.geoloc = geoloc
-        self.node_type = node_type
-        self.keywords = keywords
-
-    def to_string(self, prefix=""):
-        return f"{prefix}::{self.uuid}::{self.ip}::{self.port}::{self.geoloc}::{self.node_type}::{self.keywords}"
+from models.peer import PeerModel
 
 
 class Tracker:
-    __peers: dict[Peer] = dict()
+    __peers: dict[PeerModel] = dict()
 
     def __init__(self, uuid: str):
         self.socket = socket
@@ -36,7 +16,7 @@ class Tracker:
             return "RN"
 
         _, uuid, ip, port, geoloc, node_type, keywords = tokens
-        peer = Peer(uuid, ip, port, geoloc, node_type, keywords)
+        peer = PeerModel(uuid, ip, port, geoloc, node_type, keywords)
         self.__peers[uuid] = peer
 
         return "RO"
