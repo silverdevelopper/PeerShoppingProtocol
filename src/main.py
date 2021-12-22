@@ -4,6 +4,7 @@ import socket
 import uuid
 from client_connection import ConnectionThread
 from tracker import Tracker
+import sys
 
 host, port = "0.0.0.0", 23456
 tracker = Tracker(uuid.uuid4())
@@ -15,7 +16,7 @@ logging.basicConfig(filename=log_fname, filemode='a',
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
-def main():
+def start_tracker():
     all_threads = []
 
     with socket.socket() as server_socket:
@@ -42,7 +43,42 @@ def main():
                     
                 logging.debug("Tracker shutting down...")
                 return
+def main():
+    if sys.argv[1] == "-t":
+        start_tracker()
+    elif sys.argv[1] == "-a":
+        start_intelligent_home()
 
+def start_intelligent_home():
+    if len(sys.argv) != 4:
+        info()
+        raise Exception("Command line expect tracker ip and port")
+    #TODO: implement intelligent home 
+    port = int(sys.argv[3])
+    host = sys.argv[2]
+    client = socket.socket()
+    client.connect((host,port))
+    p = client.getpeername()
+    print(p)
+    message = client.recv(port)
+    print("Server: ",message.decode("UTF-8"))
+    m = "RG::{uuid}::127.0.0.1::{port}::Adana::A::nur,test".format(uuid = str(uuid.uuid4()), port = 23456)
+    while True:
+        print("Client: ",m)
+        client.send(m.encode())
+        message = client.recv(port)
+        print("Server: ",message.decode("UTF-8"))
+        m = input('>')
+        
+        
+
+# To start Peer use -a command line
+def info():
+    print("""
+          Arguments: [node option] [connection option]
+          node option for peer:  -a , connection option: {ip} {port}
+            node option for tracker: -t 
+          """)
 
 if __name__ == "__main__":
     main()
