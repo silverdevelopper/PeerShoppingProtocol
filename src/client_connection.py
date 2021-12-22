@@ -2,6 +2,7 @@ import logging
 import threading
 import socket
 from models.demand import Demand
+from models.offer import Offer
 from tracker import Tracker
 from peer import Peer
 
@@ -65,12 +66,12 @@ class PeerConnectionThread(TrackerConnectionThread):
         if is_understood:
             return True
 
-        if request_type == "DM":
+        elif request_type == "DM":
             if len(request_tokens) != 2:
                 return False
 
             mode = request_tokens[0]
-            demands_to_send: list[Demand] = []
+            demands_to_send: list[Demand]
 
             if mode == "N":
                 amount = int(request_tokens[1])
@@ -90,6 +91,36 @@ class PeerConnectionThread(TrackerConnectionThread):
             for demand in demands_to_send:
                 self.cli_socket.send(demand.to_string("DO").encode())
             self.cli_socket.send("DO:END")
+
+        # This is pretty much identical to demands
+        elif request_type == "OF":
+            if len(request_tokens) != 2:
+                return False
+
+            mode = request_tokens[0]
+            offers_to_send: list[Offer]
+
+            if mode == "N":
+                amount = int(request_tokens[1])
+                offers_to_send = self.peer.offers[:amount]
+
+            elif mode == "K":
+                keywords = request_tokens[1].split(",")
+                offers_to_send = [
+                    offer for offer in self.peer.offers if offer.has_keywords(keywords)
+                ]
+            else:
+                return False
+
+            self.cli_socket.send("OO::BEGIN")
+            for offer in offers_to_send:
+                self.cli_socket.send(offer.to_string("OO").encode())
+            self.cli_socket.send("OO:END")
+
+        elif request_type == "MS":
+            message = request_tokens[0]
+            print("received message:", message)
+            self.cli_socket.send("MO".encode())
 
         else:
             return False
