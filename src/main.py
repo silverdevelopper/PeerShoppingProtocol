@@ -2,7 +2,7 @@ import logging
 import os
 import socket
 import uuid
-from client_connection import ConnectionThread
+from client_connection import TrackerConnectionThread
 from tracker import Tracker
 
 host, port = "0.0.0.0", 23456
@@ -30,7 +30,7 @@ def main():
             try:
                 (client_socket, client_address) = server_socket.accept()
                 logging.info(f"New connection from IP:{client_address[0]}")
-                new_thread = ConnectionThread(tracker, client_socket, client_address)
+                new_thread = TrackerConnectionThread(tracker, client_socket, client_address)
                 all_threads.append(new_thread)
                 new_thread.start()
 
