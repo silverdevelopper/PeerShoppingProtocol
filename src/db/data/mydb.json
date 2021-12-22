@@ -5,6 +5,20 @@
     "port": 2564,
     "desc": "Berkay update!!",
     "geoloc": "Adana",
+    "products": [
+        {
+            "name": "Apple",
+            "unit_key": "KG",
+            "desc": "",
+            "amount": 3
+        },
+        {
+            "name": "Cherry",
+            "unit_key": "KG",
+            "desc": "",
+            "amount": 4
+        }
+    ],
     "peers": {
         "59a57405-7fa1-4426-b1b3-4e46bba040fb": {
             "name": "berkay",
