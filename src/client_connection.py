@@ -54,10 +54,11 @@ class TrackerConnectionThread(threading.Thread):
 
 
 class PeerConnectionThread(TrackerConnectionThread):
-    def __init__(self, peer: Peer, cli_socket: socket.socket, cli_address):
+    def __init__(self, peer: Peer, client_peer_info: PeerInfo, cli_socket: socket.socket, cli_address):
         super().__init__(peer, cli_socket, cli_address)
         # This is just for naming it as "peer"
         self.peer = peer
+        self.client_peer_info = client_peer_info
 
     def __parse_request(self, request: str):
         request_type, *request_tokens = request.split("::")
@@ -121,6 +122,19 @@ class PeerConnectionThread(TrackerConnectionThread):
             message = request_tokens[0]
             print("received message:", message)
             self.cli_socket.send("MO".encode())
+
+        elif request_type == "SB":
+            mode = request_tokens[0]
+            if mode == "T":
+                self.peer.add_subscriber(self.client_peer_info.uuid)
+                logging.info(f"New subscriber {self.client_peer_info.uuid}")
+                print("Subscriber added successfully")
+            elif mode == "F":
+                self.peer.remove_subscriber(self.client_peer_info.uuid)
+                logging.info(f"Subscriber removed {self.client_peer_info.uuid}")
+                print("Someone unsubscribed...")
+            else:
+                return False
 
         else:
             return False

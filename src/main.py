@@ -8,7 +8,8 @@ from tracker import Tracker
 host, port = "0.0.0.0", 23456
 tracker = Tracker(uuid.uuid4())
 
-log_dir = os.path.join(os.path.normpath(os.getcwd() + os.sep + os.pardir), 'logs')
+current_path = Path(__file__)
+log_dir = os.path.join(os.path.normpath(current_path + os.sep + os.pardir), 'logs')
 log_fname = os.path.join(log_dir, 'tracker.log')
 os.makedirs(os.path.dirname(log_fname), exist_ok=True)
 logging.basicConfig(filename=log_fname, filemode='a',

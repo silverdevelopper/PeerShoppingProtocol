@@ -21,6 +21,13 @@ class Peer(Tracker):
         self.__info = PeerInfo(uuid, ip, port, geoloc, "A", keywords)
         self.demands = demands
         self.offers = offers
+        self.subscribers = []
 
     def to_string(self, prefix=""):
         return self.__info.to_string(prefix)
+
+    def add_subscriber(self, peer_uuid):
+        self.subscribers.append(peer_uuid)
+    
+    def remove_subscriber(self, peer_uuid):
+        self.subscribers.remove(peer_uuid)

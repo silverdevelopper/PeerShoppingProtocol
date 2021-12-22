@@ -14,7 +14,7 @@ class Tracker:
         tokens = request.split("::")
 
         if len(tokens) != 7:
-            logging.error(f"Registration request rejected.")
+            logging.info(f"Registration request rejected.")
             return "RN"
 
         _, uuid, ip, port, geoloc, node_type, keywords = tokens
