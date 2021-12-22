@@ -1,9 +1,10 @@
 import logging
 import socket
-from models.peer import PeerModel
+from models.peer_info import PeerInfo
+
 
 class Tracker:
-    __peers: dict[PeerModel] = dict()
+    __peers: dict[PeerInfo] = dict()
 
     def __init__(self, uuid: str):
         self.socket = socket
@@ -17,7 +18,7 @@ class Tracker:
             return "RN"
 
         _, uuid, ip, port, geoloc, node_type, keywords = tokens
-        peer = PeerModel(uuid, ip, port, geoloc, node_type, keywords)
+        peer = PeerInfo(uuid, ip, port, geoloc, node_type, keywords)
         self.__peers[uuid] = peer
 
         logging.info(f"Registered {uuid}:{ip}:{port}")

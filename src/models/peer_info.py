@@ -1,7 +1,7 @@
 from models.base_model import BaseModel
 
 
-class PeerModel(BaseModel):
+class PeerInfo(BaseModel):
     def __init__(
         self,
         uuid: str,
