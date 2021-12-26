@@ -5,11 +5,12 @@ import uuid
 from client_connection import TrackerConnectionThread
 from tracker import Tracker
 import sys
+from pathlib import Path
 
 host, port = "0.0.0.0", 23456
 tracker = Tracker(uuid.uuid4())
 
-current_path = Path(__file__)
+current_path = str(Path(__file__))
 log_dir = os.path.join(os.path.normpath(current_path + os.sep + os.pardir), 'logs')
 log_fname = os.path.join(log_dir, 'tracker.log')
 os.makedirs(os.path.dirname(log_fname), exist_ok=True)
@@ -45,7 +46,10 @@ def start_tracker():
                 logging.debug("Tracker shutting down...")
                 return
 def main():
-    if sys.argv[1] == "-t":
+    if len(sys.argv) == 1:
+        info()
+        return
+    elif sys.argv[1] == "-t":
         start_tracker()
     elif sys.argv[1] == "-a":
         start_intelligent_home()

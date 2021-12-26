@@ -5,6 +5,7 @@ from models.demand import Demand
 from models.offer import Offer
 from tracker import Tracker
 from peer import Peer
+from models.peer_info import PeerInfo
 
 
 class TrackerConnectionThread(threading.Thread):
