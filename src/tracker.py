@@ -5,7 +5,7 @@ from typing import Tuple
 
 
 class Tracker:
-    __peers: dict[PeerInfo] = dict()
+    __peers: dict[str, PeerInfo] = dict()
 
     def __init__(self, uuid: str):
         self.socket = socket
@@ -29,7 +29,7 @@ class Tracker:
     def get_peers(self):
         return self.__peers.values()
 
-    def get_peer_by_address(self, address: Tuple[str, int]) -> PeerInfo:
+    def get_peer_by_address(self, address: Tuple[str, int]):
         for peer in self.__peers.values():
             if peer.ip == address[0] and peer.port == address[1]:
                 return peer

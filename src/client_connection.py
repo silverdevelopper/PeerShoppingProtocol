@@ -1,6 +1,7 @@
 import logging
 import threading
 import socket
+from typing import Tuple
 from models.demand import Demand
 from models.offer import Offer
 from tracker import Tracker
@@ -9,8 +10,9 @@ from models.peer_info import PeerInfo
 
 
 class TrackerConnectionThread(threading.Thread):
-
-    def __init__(self, tracker: Tracker, cli_socket: socket.socket, cli_address):
+    def __init__(
+        self, tracker: Tracker, cli_socket: socket.socket, cli_address: Tuple[str, int]
+    ):
         threading.Thread.__init__(self)
         self.cli_socket = cli_socket
         self.tracker = tracker
@@ -60,7 +62,7 @@ class PeerConnectionThread(TrackerConnectionThread):
         peer: Peer,
         client_peer_info: PeerInfo,
         cli_socket: socket.socket,
-        cli_address,
+        cli_address: Tuple[str, int],
     ):
         super().__init__(peer, cli_socket, cli_address)
         # This is just for naming it as "peer"
@@ -142,6 +144,43 @@ class PeerConnectionThread(TrackerConnectionThread):
                 print("Someone unsubscribed...")
             else:
                 return False
+
+        elif request_type == "TR":
+            if len(request_tokens) != 5:
+                return False
+
+            mode = request_tokens[0]
+            if mode == "O":
+                (
+                    demand_id,
+                    exchange_name,
+                    exchange_unit,
+                    exchange_amount,
+                ) = request_tokens[1:]
+
+                offer = self.peer.get_offer_by_id(demand_id)
+                if not offer:
+                    self.cli_socket.send("TN".encode())
+                    return True
+
+                print("Received a transaction request for offer:", offer)
+                # TODO handle transaction
+
+            elif mode == "D":
+                (
+                    demand_id,
+                    exchange_name,
+                    exchange_unit,
+                    exchange_amount,
+                ) = request_tokens[1:]
+
+                demand = self.peer.get_demand_by_id(demand_id)
+                if not demand:
+                    self.cli_socket.send("TN".encode())
+                    return True
+
+                print("Received a transaction request for demand:", demand)
+                # TODO handle transaction
 
         else:
             return False

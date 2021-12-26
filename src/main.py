@@ -83,6 +83,15 @@ def start_intelligent_home():
                 logging.info(f"New connection from IP:{client_address[0]}")
 
                 connected_peer_info = peer.get_peer_by_address(client_address)
+
+                #TODO handle peer not found
+                if not connected_peer_info:
+                    print("Unknown peer")
+                    print("TODO should fetch peers from a tracker on startup")
+                    client_socket.send("ER".encode())
+                    client_socket.close()
+                    continue
+                
                 new_thread = PeerConnectionThread(peer, connected_peer_info, client_socket, client_address)
                 all_threads.append(new_thread)
                 new_thread.start()

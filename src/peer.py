@@ -31,3 +31,15 @@ class Peer(Tracker):
     
     def remove_subscriber(self, peer_uuid):
         self.subscribers.remove(peer_uuid)
+
+    def get_offer_by_id(self, offer_id):
+        for offer in self.offers:
+            if offer.id == offer_id:
+                return offer
+        return None
+
+    def get_demand_by_id(self, demand_id):
+        for demand in self.demands:
+            if demand.id == demand_id:
+                return demand
+        return None
