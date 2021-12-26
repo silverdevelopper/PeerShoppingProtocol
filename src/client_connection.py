@@ -9,26 +9,26 @@ from models.peer_info import PeerInfo
 
 
 class TrackerConnectionThread(threading.Thread):
-    __is_listening = True
 
     def __init__(self, tracker: Tracker, cli_socket: socket.socket, cli_address):
         threading.Thread.__init__(self)
         self.cli_socket = cli_socket
         self.tracker = tracker
         self.cli_address = cli_address
+        self.is_listening = True
 
     def run(self):
         self.cli_socket.send(f"HE::{self.tracker.uuid}".encode())
 
-        while self.__is_listening:
+        while self.is_listening:
             request = self.cli_socket.recv(1024).decode().strip()
             logging.info(f"{self.cli_address[0]} > {request}")
-            is_understood = self.__parse_request(request)
+            is_understood = self.parse_request(request)
 
             if not is_understood:
                 self.cli_socket.send("ER".encode())
 
-    def __parse_request(self, request: str):
+    def parse_request(self, request: str):
         request_type = request.split("::")[0]
         if request_type == "IG":
             self.cli_socket.send(f"OG::{self.tracker.uuid}".encode())
@@ -36,7 +36,7 @@ class TrackerConnectionThread(threading.Thread):
             self.cli_socket.send("BY".encode())
             self.cli_socket.close()
             logging.info(f"Connection ended with IP: {self.cli_address[0]}")
-            self.__is_listening = False
+            self.is_listening = False
         elif request_type == "RG":
             response = self.tracker.register(request)
             self.cli_socket.send(response.encode())
@@ -55,16 +55,22 @@ class TrackerConnectionThread(threading.Thread):
 
 
 class PeerConnectionThread(TrackerConnectionThread):
-    def __init__(self, peer: Peer, client_peer_info: PeerInfo, cli_socket: socket.socket, cli_address):
+    def __init__(
+        self,
+        peer: Peer,
+        client_peer_info: PeerInfo,
+        cli_socket: socket.socket,
+        cli_address,
+    ):
         super().__init__(peer, cli_socket, cli_address)
         # This is just for naming it as "peer"
         self.peer = peer
         self.client_peer_info = client_peer_info
 
-    def __parse_request(self, request: str):
+    def parse_request(self, request: str):
         request_type, *request_tokens = request.split("::")
 
-        is_understood = super().__parse_request(request)
+        is_understood = super().parse_request(request)
         if is_understood:
             return True
 
@@ -89,10 +95,10 @@ class PeerConnectionThread(TrackerConnectionThread):
             else:
                 return False
 
-            self.cli_socket.send("DO::BEGIN")
+            self.cli_socket.send("DO::BEGIN".encode())
             for demand in demands_to_send:
                 self.cli_socket.send(demand.to_string("DO").encode())
-            self.cli_socket.send("DO:END")
+            self.cli_socket.send("DO:END".encode())
 
         # This is pretty much identical to demands
         elif request_type == "OF":
@@ -114,10 +120,10 @@ class PeerConnectionThread(TrackerConnectionThread):
             else:
                 return False
 
-            self.cli_socket.send("OO::BEGIN")
+            self.cli_socket.send("OO::BEGIN".encode())
             for offer in offers_to_send:
                 self.cli_socket.send(offer.to_string("OO").encode())
-            self.cli_socket.send("OO:END")
+            self.cli_socket.send("OO:END".encode())
 
         elif request_type == "MS":
             message = request_tokens[0]

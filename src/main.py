@@ -2,13 +2,13 @@ import logging
 import os
 import socket
 import uuid
-from client_connection import TrackerConnectionThread
-from tracker import Tracker
 import sys
+from peer import Peer
+from client_connection import PeerConnectionThread, TrackerConnectionThread
+from tracker import Tracker
 from pathlib import Path
 
 host, port = "0.0.0.0", 23456
-tracker = Tracker(uuid.uuid4())
 
 current_path = str(Path(__file__))
 log_dir = os.path.join(os.path.normpath(current_path + os.sep + os.pardir), 'logs')
@@ -19,6 +19,7 @@ logging.basicConfig(filename=log_fname, filemode='a',
                     datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
 def start_tracker():
+    tracker = Tracker(uuid.uuid4())
     all_threads = []
 
     with socket.socket() as server_socket:
@@ -45,6 +46,8 @@ def start_tracker():
                     
                 logging.debug("Tracker shutting down...")
                 return
+
+
 def main():
     if len(sys.argv) == 1:
         info()
@@ -59,22 +62,40 @@ def start_intelligent_home():
         info()
         raise Exception("Command line expect tracker ip and port")
     #TODO: implement intelligent home 
+
+    all_threads = []
     port = int(sys.argv[3])
     host = sys.argv[2]
-    client = socket.socket()
-    client.connect((host,port))
-    p = client.getpeername()
-    print(p)
-    message = client.recv(port)
-    print("Server: ",message.decode("UTF-8"))
-    m = "RG::{uuid}::127.0.0.1::{port}::Adana::A::nur,test".format(uuid = str(uuid.uuid4()), port = 23456)
-    while True:
-        print("Client: ",m)
-        client.send(m.encode())
-        message = client.recv(port)
-        print("Server: ",message.decode("UTF-8"))
-        m = input('>')
-        
+    peer = Peer(uuid.uuid4(), host, port, geoloc="Istanbul")
+
+
+    with socket.socket() as server_socket:
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind((host, port))
+        server_socket.listen(0)
+        server_socket.settimeout(1)
+
+        print("Listening...")
+
+        while True:
+            try:
+                (client_socket, client_address) = server_socket.accept()
+                logging.info(f"New connection from IP:{client_address[0]}")
+
+                connected_peer_info = peer.get_peer_by_address(client_address)
+                new_thread = PeerConnectionThread(peer, connected_peer_info, client_socket, client_address)
+                all_threads.append(new_thread)
+                new_thread.start()
+
+            except socket.timeout:
+                continue
+            except KeyboardInterrupt:
+                for thread in all_threads:
+                    thread.join()
+                    
+                logging.debug("Tracker shutting down...")
+                return
+
         
 
 # To start Peer use -a command line
