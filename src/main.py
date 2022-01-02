@@ -1,12 +1,12 @@
 import logging
 import os
 import socket
-import uuid
 import sys
-from peer import Peer
 from client_connection import PeerConnectionThread, TrackerConnectionThread
-from tracker import Tracker
 from pathlib import Path
+from peer import Peer
+from tracker import Tracker
+from uuid import uuid4
 
 host, port = "0.0.0.0", 23456
 
@@ -19,7 +19,7 @@ logging.basicConfig(filename=log_fname, filemode='a',
                     datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
 def start_tracker():
-    tracker = Tracker(uuid.uuid4())
+    tracker = Tracker(uuid4())
     all_threads = []
 
     with socket.socket() as server_socket:
@@ -47,7 +47,6 @@ def start_tracker():
                 logging.debug("Tracker shutting down...")
                 return
 
-
 def main():
     if len(sys.argv) == 1:
         info()
@@ -66,7 +65,7 @@ def start_intelligent_home():
     all_threads = []
     port = int(sys.argv[3])
     host = sys.argv[2]
-    peer = Peer(uuid.uuid4(), host, port, geoloc="Istanbul")
+    peer = Peer(uuid4(), host, port, geoloc="Istanbul")
 
 
     with socket.socket() as server_socket:
