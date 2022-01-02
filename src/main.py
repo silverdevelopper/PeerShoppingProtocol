@@ -19,7 +19,7 @@ logging.basicConfig(filename=log_fname, filemode='a',
                     datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
 def start_tracker():
-    tracker = Tracker(uuid.uuid4())
+    tracker = Tracker(uuid.uuid4(), host, port, geoloc="Istanbul")
     all_threads = []
 
     with socket.socket() as server_socket:

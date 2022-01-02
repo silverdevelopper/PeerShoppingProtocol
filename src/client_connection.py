@@ -1,6 +1,7 @@
 import logging
 import threading
 import socket
+import time
 from typing import Tuple
 from models.demand import Demand
 from models.offer import Offer
@@ -40,15 +41,19 @@ class TrackerConnectionThread(threading.Thread):
             logging.info(f"Connection ended with IP: {self.cli_address[0]}")
             self.is_listening = False
         elif request_type == "RG":
-            response = self.tracker.register(request)
+            peer = self.tracker.register(request)
+            response = "RN" if peer is None else "RO"
             self.cli_socket.send(response.encode())
             logging.info(f"{self.cli_address[0]} < {response}")
         elif request_type == "CS":
             peers = self.tracker.get_peers()
 
             self.cli_socket.send("CO::BEGIN".encode())
+            time.sleep(0.01)
             for peer in peers:
                 self.cli_socket.send(peer.to_string(prefix="CO").encode())
+                time.sleep(0.01)
+
             self.cli_socket.send("CO::END".encode())
         else:
             return False
@@ -98,8 +103,12 @@ class PeerConnectionThread(TrackerConnectionThread):
                 return False
 
             self.cli_socket.send("DO::BEGIN".encode())
+            time.sleep(0.01)
+
             for demand in demands_to_send:
                 self.cli_socket.send(demand.to_string("DO").encode())
+                time.sleep(0.01)
+
             self.cli_socket.send("DO:END".encode())
 
         # This is pretty much identical to demands
@@ -123,8 +132,12 @@ class PeerConnectionThread(TrackerConnectionThread):
                 return False
 
             self.cli_socket.send("OO::BEGIN".encode())
+            time.sleep(0.01)
+
             for offer in offers_to_send:
                 self.cli_socket.send(offer.to_string("OO").encode())
+                time.sleep(0.01)
+    
             self.cli_socket.send("OO:END".encode())
 
         elif request_type == "MS":

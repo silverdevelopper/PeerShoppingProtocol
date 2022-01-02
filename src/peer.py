@@ -5,8 +5,6 @@ from tracker import Tracker
 
 
 class Peer(Tracker):
-    __info: PeerInfo
-
     def __init__(
         self,
         uuid: str,
@@ -17,18 +15,17 @@ class Peer(Tracker):
         demands: list[Demand] = [],
         offers: list[Offer] = [],
     ):
-        super().__init__(uuid)
-        self.__info = PeerInfo(uuid, ip, port, geoloc, "A", keywords)
+        super().__init__(uuid, ip, port, geoloc, "A", keywords)
         self.demands = demands
         self.offers = offers
         self.subscribers = []
 
     def to_string(self, prefix=""):
-        return self.__info.to_string(prefix)
+        return self.info.to_string(prefix)
 
     def add_subscriber(self, peer_uuid):
         self.subscribers.append(peer_uuid)
-    
+
     def remove_subscriber(self, peer_uuid):
         self.subscribers.remove(peer_uuid)
 
