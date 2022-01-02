@@ -12,7 +12,7 @@ class Offer(BaseModel):
         self.exchange_product = exchange_product
 
     def to_string(self, prefix: str):
-        return f"{prefix}::{self.uuid}::{self.offered_product.to_string()}::{self.exchange_product.to_string()}"
+        return f"{prefix}::{self.uuid}::{self.name}::{self.offered_product.to_string()}::{self.exchange_product.to_string()}"
 
     def has_keywords(self, keywords: list[str]):
         return self.offered_product.has_keywords(
