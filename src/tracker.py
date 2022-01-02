@@ -4,7 +4,7 @@ from models.peer_info import PeerInfo
 
 
 class Tracker:
-    __peers: dict[PeerInfo] = dict()
+    __peers = {}
 
     def __init__(self, uuid: str):
         self.socket = socket

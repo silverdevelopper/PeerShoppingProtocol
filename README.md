@@ -11,3 +11,5 @@ $ python src/main.py
         -/src/db
                 /data
         -/src/models
+## Default Tracker
+IPv4: 13.59.56.189 port: 23456
