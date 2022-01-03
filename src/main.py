@@ -31,9 +31,10 @@ def start_tracker():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-        server_socket.settimeout(1)
+       # server_socket.settimeout(10)
 
         logging.debug("Tracker starting up...")
+        print("racker starting up...")
         print("Listening...")
         while True:
             try:
@@ -45,8 +46,10 @@ def start_tracker():
                 all_threads.append(new_thread)
                 new_thread.start()
 
-            except socket.timeout:
-                continue
+            except socket.timeout as e:
+                print("Timeout! Tracker shutting down...",e)
+                logging.debug("Timeout! Tracker shutting down...")
+                return
             except KeyboardInterrupt:
                 for thread in all_threads:
                     thread.join()
@@ -69,8 +72,7 @@ def start_intelligent_home():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-        server_socket.settimeout(1)
-
+        #server_socket.settimeout(1)
         print("Listening...")
 
         while True:

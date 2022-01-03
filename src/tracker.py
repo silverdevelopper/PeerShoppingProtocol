@@ -62,8 +62,11 @@ class Tracker:
         tracker_socket = socket.socket()
         try:
             tracker_socket.connect((tracker_ip, tracker_port))
-        except:
+        except Exception as e:
             logging.error(f"Could not connect to global tracker.")
+            print(e)
+            tracker_socket.close()
+            #raise Exception("Could not connect to global tracker.")
             return
 
         # Ignore first hello message
@@ -101,7 +104,7 @@ class Tracker:
     def send_message_to_peer(
         self,
         peer_uuid: str,
-        message_or_message_list: Union[str, list[str]],
+        message_or_message_list: Union[str, list],
         expected_response_for_each_message: str = None,
         error_code_for_unexpected_response: str = None,
         get_response: bool = False,

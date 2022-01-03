@@ -31,7 +31,13 @@ class TrackerConnectionThread(threading.Thread):
             is_understood = self.parse_request(request)
 
             if not is_understood:
-                self.cli_socket.send("ER".encode())
+                try:
+                    self.cli_socket.send("ER".encode())
+                except Exception as e:
+                    logging.error(e)
+                    print(e)
+                    self.is_listening = False
+                    #raise Exception(str(e)+"\n Request:"+request)
 
     def parse_request(self, request: str):
         request_type = request.split("::")[0]
