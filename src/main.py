@@ -31,7 +31,7 @@ def start_tracker():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-        #server_socket.settimeout(1)
+       # server_socket.settimeout(10)
 
         logging.debug("Tracker starting up...")
         print("racker starting up...")
@@ -83,8 +83,7 @@ def start_intelligent_home():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-        server_socket.settimeout(1)
-
+        #server_socket.settimeout(1)
         print("Listening...")
 
         while True:
