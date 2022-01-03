@@ -5,8 +5,7 @@ from models.peer_info import PeerInfo
 from typing import Tuple, Union
 
 
-# real values are -> "13.59.56.189", 23456
-GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "localhost", 11_111
+GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "13.59.56.189", 23456
 
 
 class Tracker:
