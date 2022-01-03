@@ -5,7 +5,6 @@ from models.peer_info import PeerInfo
 from typing import Tuple, Union
 
 
-# real values are -> "13.59.56.189", 23456
 GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "13.59.56.189", 23456
 
 
@@ -97,7 +96,7 @@ class Tracker:
         logging.info(f"Fetched peers from global tracker")
 
     def get_peer_by_uuid(self, uuid: str):
-        return self.__peers[uuid]
+        return self.peers[uuid]
 
     def send_message_to_peer(
         self,
