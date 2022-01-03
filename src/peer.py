@@ -1,5 +1,5 @@
 import threading
-from typing import Union
+from models.peer_info import PeerInfo
 from models.demand import Demand
 from models.offer import Offer
 from models.transaction import TransactionRequest
@@ -46,7 +46,7 @@ class Peer(Tracker):
 
     def create_offer(self, name, offered_product, exchange_product):
         offer_uuid = uuid4()
-        new_offer = Demand(offer_uuid, name, offered_product, exchange_product)
+        new_offer = Offer(offer_uuid, name, offered_product, exchange_product)
         self.offers.append(new_offer)
         self.__notify_offer_change()
 
@@ -55,6 +55,23 @@ class Peer(Tracker):
         new_demand = Demand(demand_uuid, name, requested_product, exchange_product)
         self.demands.append(new_demand)
         self.__notify_demand_change()
+
+    def receive_message(self, message: str, sender: PeerInfo):
+        print("received the following message from", sender.to_string())
+        print(message)
+
+    def send_message(self, message: str, peer_uuid: str):
+        peer_socket = self.connect_to_peer(peer_uuid)
+
+        if peer_socket is None:
+            return False
+
+        peer_socket.send(f"MS::{message}".encode())
+        response = peer_socket.recv(1024).decode().strip()
+        peer_socket.close()
+
+        # return if the message was sent successfully
+        return response == "MO"
 
     def handle_transaction_request(self, request: TransactionRequest):
         if request.mode == "D":
@@ -118,21 +135,23 @@ class Peer(Tracker):
             ],
         )
 
-    def __notify_subscribers(
-        self,
-        message_or_message_list: Union[str, list],
-        expected_response_for_each_message="UO",
-        unexpected_response_error_code="UN",
-    ):
+    def __notify_subscribers(self, message_list: list):
+        def callback(peer_uuid: str):
+            peer_socket = self.connect_to_peer(peer_uuid)
+            if peer_socket is None:
+                return
+
+            for message in message_list:
+                peer_socket.send(message.encode())
+                response = peer_socket.recv(1024).decode().strip()
+                if response != "UO":
+                    peer_socket.send("UN".encode())
+                    break
+
+            peer_socket.close()
+
         threads = [
-            threading.Thread(
-                target=lambda: self.send_message_to_peer(
-                    peer_uuid,
-                    message_or_message_list,
-                    expected_response_for_each_message=expected_response_for_each_message,
-                    unexpected_response_error_code=unexpected_response_error_code,
-                )
-            )
+            threading.Thread(target=lambda: callback(peer_uuid))
             for peer_uuid in self.subscribers
         ]
 

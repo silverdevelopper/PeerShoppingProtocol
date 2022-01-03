@@ -1,6 +1,5 @@
 import logging
 import socket
-import time
 from models.peer_info import PeerInfo
 from typing import Tuple, Union
 
@@ -66,7 +65,7 @@ class Tracker:
             logging.error(f"Could not connect to global tracker.")
             print(e)
             tracker_socket.close()
-            #raise Exception("Could not connect to global tracker.")
+            # raise Exception("Could not connect to global tracker.")
             return
 
         # Ignore first hello message
@@ -101,42 +100,28 @@ class Tracker:
     def get_peer_by_uuid(self, uuid: str):
         return self.peers[uuid]
 
-    def send_message_to_peer(
-        self,
-        peer_uuid: str,
-        message_or_message_list: Union[str, list],
-        expected_response_for_each_message: str = None,
-        error_code_for_unexpected_response: str = None,
-        get_response: bool = False,
-    ):
-        message_list = (
-            [message_or_message_list]
-            if isinstance(message_or_message_list, str)
-            else message_or_message_list
-        )
-
+    def connect_to_peer(self, peer_uuid: str):
         peer_info = self.get_peer_by_uuid(peer_uuid)
-
         peer_socket = socket.socket()
-        peer_socket.connect((peer_info.ip, peer_info.port))
-
-        for message in message_list:
-            peer_socket.send(message.encode())
-
-            if expected_response_for_each_message is not None:
-                response = peer_socket.recv(1024).decode().strip()
-                if response != expected_response_for_each_message:
-                    peer_socket.send(error_code_for_unexpected_response.encode())
-                    peer_socket.close()
-                    return None
-            else:
-                time.sleep(0.01)
-
-        if not get_response:
+        try:
+            peer_socket.connect((peer_info.ip, peer_info.port))
+        except Exception as e:
+            logging.error(f"Could not connect to {peer_info.to_string('Peer')}")
             peer_socket.close()
-            return
+            return None
 
-        response = peer_socket.recv(1024).decode()
-        peer_socket.close()
+        # Ignore first hello message
+        peer_socket.recv(1024)
+        # Register to peer
+        peer_socket.send(self.to_string("RG").encode())
 
-        return response
+        response = peer_socket.recv(1024).decode().strip()
+
+        if response != "RO":
+            logging.error(
+                f"Received unexpected response from peer while registering to {peer_info.to_string('Peer')} -> {response}"
+            )
+            peer_socket.close()
+            return None
+
+        return peer_socket

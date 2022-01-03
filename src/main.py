@@ -31,7 +31,7 @@ def start_tracker():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-       # server_socket.settimeout(10)
+        # server_socket.settimeout(10)
 
         logging.debug("Tracker starting up...")
         print("racker starting up...")
@@ -47,7 +47,7 @@ def start_tracker():
                 new_thread.start()
 
             except socket.timeout as e:
-                print("Timeout! Tracker shutting down...",e)
+                print("Timeout! Tracker shutting down...", e)
                 logging.debug("Timeout! Tracker shutting down...")
                 return
             except KeyboardInterrupt:
@@ -72,7 +72,7 @@ def start_intelligent_home():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(0)
-        #server_socket.settimeout(1)
+        # server_socket.settimeout(1)
         print("Listening...")
 
         while True:
@@ -80,18 +80,7 @@ def start_intelligent_home():
                 (client_socket, client_address) = server_socket.accept()
                 logging.info(f"New connection from IP:{client_address[0]}")
 
-                connected_peer_info = peer.get_peer_by_address(client_address)
-
-                # TODO handle peer not found
-                if not connected_peer_info:
-                    print("Unknown peer")
-                    client_socket.send("ER".encode())
-                    client_socket.close()
-                    continue
-
-                new_thread = PeerConnectionThread(
-                    peer, connected_peer_info, client_socket, client_address
-                )
+                new_thread = PeerConnectionThread(peer, client_socket, client_address)
                 all_threads.append(new_thread)
                 new_thread.start()
 

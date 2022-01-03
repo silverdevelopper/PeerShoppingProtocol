@@ -9,7 +9,6 @@ from models.product import Product
 from models.transaction import TransactionRequest
 from tracker import Tracker
 from peer import Peer
-from models.peer_info import PeerInfo
 
 
 class TrackerConnectionThread(threading.Thread):
@@ -37,10 +36,22 @@ class TrackerConnectionThread(threading.Thread):
                     logging.error(e)
                     print(e)
                     self.is_listening = False
-                    #raise Exception(str(e)+"\n Request:"+request)
+                    # raise Exception(str(e)+"\n Request:"+request)
 
     def parse_request(self, request: str):
         request_type = request.split("::")[0]
+
+        if request_type == "RG":
+            peer_info = self.tracker.register(request)
+            response = "RN" if peer_info is None else "RO"
+            self.cli_socket.send(response.encode())
+            logging.info(f"{self.cli_address[0]} < {response}")
+            self.client_peer_info = peer_info
+
+        # all requests below this point require peer to be registered
+        if self.client_peer_info is None:
+            return False
+
         if request_type == "IG":
             self.cli_socket.send(f"OG::{self.tracker.uuid}".encode())
 
@@ -50,19 +61,13 @@ class TrackerConnectionThread(threading.Thread):
             logging.info(f"Connection ended with IP: {self.cli_address[0]}")
             self.is_listening = False
 
-        elif request_type == "RG":
-            peer = self.tracker.register(request)
-            response = "RN" if peer is None else "RO"
-            self.cli_socket.send(response.encode())
-            logging.info(f"{self.cli_address[0]} < {response}")
-
         elif request_type == "CS":
             peers = self.tracker.get_peers()
 
             self.cli_socket.send("CO::BEGIN".encode())
             time.sleep(0.1)
-            for peer in peers:
-                self.cli_socket.send(peer.to_string(prefix="CO").encode())
+            for peer_info in peers:
+                self.cli_socket.send(peer_info.to_string(prefix="CO").encode())
                 time.sleep(0.1)
 
             self.cli_socket.send("CO::END".encode())
@@ -77,14 +82,12 @@ class PeerConnectionThread(TrackerConnectionThread):
     def __init__(
         self,
         peer: Peer,
-        client_peer_info: PeerInfo,
         cli_socket: socket.socket,
         cli_address: Tuple[str, int],
     ):
         super().__init__(peer, cli_socket, cli_address)
         # This is just for naming it as "peer"
         self.peer = peer
-        self.client_peer_info = client_peer_info
 
     def parse_request(self, request: str):
         request_type, *request_tokens = request.split("::")
@@ -92,6 +95,10 @@ class PeerConnectionThread(TrackerConnectionThread):
         is_understood = super().parse_request(request)
         if is_understood:
             return True
+
+        # all requests below this point require peer to be registered
+        if self.client_peer_info is None:
+            return False
 
         elif request_type == "DM":
             if len(request_tokens) != 2:
@@ -154,7 +161,7 @@ class PeerConnectionThread(TrackerConnectionThread):
 
         elif request_type == "MS":
             message = request_tokens[0]
-            print("received message:", message)
+            self.peer.receive_message(message, self.peer.info)
             self.cli_socket.send("MO".encode())
 
         elif request_type == "SB":
