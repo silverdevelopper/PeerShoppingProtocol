@@ -6,7 +6,7 @@ from typing import Tuple, Union
 
 
 # real values are -> "13.59.56.189", 23456
-GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "localhost", 11_111
+GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "13.59.56.189", 23456
 
 
 class Tracker:
@@ -102,7 +102,7 @@ class Tracker:
     def send_message_to_peer(
         self,
         peer_uuid: str,
-        message_or_message_list: Union[str, list[str]],
+        message_or_message_list: Union[str, list],
         expected_response_for_each_message: str = None,
         error_code_for_unexpected_response: str = None,
         get_response: bool = False,

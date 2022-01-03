@@ -46,7 +46,8 @@ def start_tracker():
                 new_thread.start()
 
             except socket.timeout:
-                continue
+                logging.debug("Timeout! Tracker shutting down...")
+                return
             except KeyboardInterrupt:
                 for thread in all_threads:
                     thread.join()

@@ -17,5 +17,5 @@ class Transaction(BaseModel):
     def to_string(self, prefix=""):
         return f"{prefix}::{self.offer_or_demand}::{self.offer_uuid}::{self.exc_product}"
 
-    def has_keywords(self, keywords: list[str]):
+    def has_keywords(self, keywords: list):
         pass

@@ -16,14 +16,14 @@ class Peer(Tracker):
         port: int,
         geoloc: str,
         keywords: str = "",
-        demands: list[Demand] = [],
-        offers: list[Offer] = [],
-        transaction_inbox: list[Transaction] = [],
+        demands: list = [],
+        offers: list = [],
+        transaction_inbox: list = [],
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
         self.demands = demands
         self.offers = offers
-        self.subscribers: list[str] = []
+        self.subscribers: list = []
         self.transaction_inbox = transaction_inbox
 
     def to_string(self, prefix=""):
@@ -97,7 +97,7 @@ class Peer(Tracker):
 
     def __notify_subscribers(
         self,
-        message_or_message_list: Union[str, list[str]],
+        message_or_message_list: Union[str, list],
         expected_response_for_each_message="UO",
         unexpected_response_error_code="UN",
     ):
