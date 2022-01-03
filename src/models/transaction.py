@@ -18,8 +18,8 @@ class TransactionRequest(BaseModel):
         self.exc_product = exc_product
         self.offer_or_demand = offer_or_demand
 
-    def to_string(self, prefix=""):
-        return f"{prefix}::{self.offer_or_demand}::{self.offer_or_demand.uuid}::{self.exc_product}"
+    def to_string(self, prefix: str):
+        return f"{prefix}::{self.type}::{self.offer_or_demand.uuid}::{self.exc_product.to_string()}"
 
     def has_keywords(self, keywords: list[str]):
         return self.offer_or_demand.has_keywords(keywords)
