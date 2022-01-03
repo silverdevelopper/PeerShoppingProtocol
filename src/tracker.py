@@ -96,7 +96,7 @@ class Tracker:
         logging.info(f"Fetched peers from global tracker")
 
     def get_peer_by_uuid(self, uuid: str):
-        return self.__peers[uuid]
+        return self.peers[uuid]
 
     def send_message_to_peer(
         self,
