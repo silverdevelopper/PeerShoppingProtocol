@@ -55,21 +55,10 @@ def start_tracker():
                 return
 
 
-def main():
-    if len(sys.argv) == 1:
-        info()
-        return
-    elif sys.argv[1] == "-t":
-        start_tracker()
-    elif sys.argv[1] == "-a":
-        start_intelligent_home()
-
-
 def start_intelligent_home():
     if len(sys.argv) != 4:
         info()
         raise Exception("Command line expect tracker ip and port")
-    # TODO: implement intelligent home
 
     all_threads = []
     port = int(sys.argv[3])
@@ -94,7 +83,6 @@ def start_intelligent_home():
                 # TODO handle peer not found
                 if not connected_peer_info:
                     print("Unknown peer")
-                    print("TODO should fetch peers from a tracker on startup")
                     client_socket.send("ER".encode())
                     client_socket.close()
                     continue
@@ -123,6 +111,16 @@ def info():
         "node option for tracker: -t",
         sep="\n",
     )
+
+
+def main():
+    if len(sys.argv) == 1:
+        info()
+        return
+    elif sys.argv[1] == "-t":
+        start_tracker()
+    elif sys.argv[1] == "-a":
+        start_intelligent_home()
 
 
 if __name__ == "__main__":

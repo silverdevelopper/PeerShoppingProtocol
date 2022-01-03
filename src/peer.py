@@ -2,8 +2,7 @@ import threading
 from typing import Union
 from models.demand import Demand
 from models.offer import Offer
-from models.peer_info import PeerInfo
-from models.transaction import Transaction
+from models.transaction import TransactionRequest
 from tracker import Tracker
 from uuid import uuid4
 
@@ -18,13 +17,11 @@ class Peer(Tracker):
         keywords: str = "",
         demands: list[Demand] = [],
         offers: list[Offer] = [],
-        transaction_inbox: list[Transaction] = [],
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
         self.demands = demands
         self.offers = offers
         self.subscribers: list[str] = []
-        self.transaction_inbox = transaction_inbox
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -51,20 +48,59 @@ class Peer(Tracker):
         offer_uuid = uuid4()
         new_offer = Demand(offer_uuid, name, offered_product, exchange_product)
         self.offers.append(new_offer)
-
-        self.__notify_subscribers(
-            [
-                "UO::BEGIN",
-                *[offer.to_string("UO::T") for offer in self.offers],
-                "UO::END",
-            ],
-        )
+        self.__notify_offer_change()
 
     def create_demand(self, name, requested_product, exchange_product):
         demand_uuid = uuid4()
         new_demand = Demand(demand_uuid, name, requested_product, exchange_product)
         self.demands.append(new_demand)
+        self.__notify_demand_change()
 
+    def handle_transaction_request(self, request: TransactionRequest):
+        if request.mode == "D":
+            # check if peer have the exchange product in any offer
+            for offer in self.offers:
+                if offer.offered_product.can_be_exchanged_with(request.exc_product):
+                    # remove offer or reduce its amount
+                    if offer.offered_product.amount == request.exc_product.amount:
+                        self.__remove_offer_by_id(offer.uuid)
+                    else:
+                        offer.offered_product.amount -= request.exc_product.amount
+
+            # remove demand
+            self.__remove_demand_by_id(request.offer_or_demand.uuid)
+            return "TD"
+
+        if request.mode == "O":
+            # check if peer want the exchange product in any demand
+            for demand in self.demands:
+                if demand.requested_product.can_be_exchanged_with(request.exc_product):
+                    # remove demand or reduce its amount
+                    if demand.requested_product.amount == request.exc_product.amount:
+                        self.__remove_demand_by_id(demand.uuid)
+                    else:
+                        demand.requested_product.amount -= request.exc_product.amount
+            # remove offer
+            self.__remove_offer_by_id(request.offer_or_demand.uuid)
+            return "TD"
+
+        return "TN"
+
+    def __remove_demand_by_id(self, demand_id: str):
+        for demand in self.demands:
+            if demand.uuid == demand_id:
+                self.demands.remove(demand)
+                self.__notify_demand_change()
+                return
+
+    def __remove_offer_by_id(self, offer_id: str):
+        for offer in self.offers:
+            if offer.uuid == offer_id:
+                self.offers.remove(offer)
+                self.__notify_offer_change()
+                return
+
+    def __notify_demand_change(self):
         self.__notify_subscribers(
             [
                 "UB::BEGIN",
@@ -73,27 +109,14 @@ class Peer(Tracker):
             ],
         )
 
-    def list_transactions(self):
-        for ta in self.transaction_inbox:
-            # TODO: nasıl dondursun?
-            pass
-
-    def accept_transaction(self, transaction_uuid):
-        for ta in self.transaction_inbox:
-            if ta.uuid == transaction_uuid:
-                self.transaction_inbox.remove(ta)
-                # TODO this should notify the other peer
-                return ta
-        return None
-
-    # TODO: Suan ikisi de aynı isi yapiyor :/
-    def decline_transaction(self, transaction_uuid):
-        for ta in self.transaction_inbox:
-            if ta.uuid == transaction_uuid:
-                self.transaction_inbox.remove(ta)
-                # TODO this should notify the other peer
-                return ta
-        return None
+    def __notify_offer_change(self):
+        self.__notify_subscribers(
+            [
+                "UO::BEGIN",
+                *[offer.to_string("UO::T") for offer in self.offers],
+                "UO::END",
+            ],
+        )
 
     def __notify_subscribers(
         self,

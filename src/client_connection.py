@@ -5,6 +5,8 @@ import time
 from typing import Tuple
 from models.demand import Demand
 from models.offer import Offer
+from models.product import Product
+from models.transaction import TransactionRequest
 from tracker import Tracker
 from peer import Peer
 from models.peer_info import PeerInfo
@@ -137,7 +139,7 @@ class PeerConnectionThread(TrackerConnectionThread):
             for offer in offers_to_send:
                 self.cli_socket.send(offer.to_string("OO").encode())
                 time.sleep(0.01)
-    
+
             self.cli_socket.send("OO:END".encode())
 
         elif request_type == "MS":
@@ -162,38 +164,27 @@ class PeerConnectionThread(TrackerConnectionThread):
             if len(request_tokens) != 5:
                 return False
 
-            mode = request_tokens[0]
-            if mode == "O":
-                (
-                    demand_id,
-                    exchange_name,
-                    exchange_unit,
-                    exchange_amount,
-                ) = request_tokens[1:]
+            (
+                mode,
+                demand_or_offer_id,
+                exchange_name,
+                exchange_unit,
+                exchange_amount,
+            ) = request_tokens
 
-                offer = self.peer.get_offer_by_id(demand_id)
-                if not offer:
-                    self.cli_socket.send("TN".encode())
-                    return True
+            offer_or_demand = self.peer.get_demand_by_id(
+                demand_or_offer_id
+            ) or self.peer.get_offer_by_id(demand_or_offer_id)
 
-                print("Received a transaction request for offer:", offer)
-                # TODO handle transaction
+            if offer_or_demand is None:
+                self.cli_socket.send("TN".encode())
+                return True
 
-            elif mode == "D":
-                (
-                    demand_id,
-                    exchange_name,
-                    exchange_unit,
-                    exchange_amount,
-                ) = request_tokens[1:]
+            product = Product(exchange_name, exchange_unit, exchange_amount)
+            request = TransactionRequest(mode, self.peer.uuid, offer_or_demand, product)
 
-                demand = self.peer.get_demand_by_id(demand_id)
-                if not demand:
-                    self.cli_socket.send("TN".encode())
-                    return True
-
-                print("Received a transaction request for demand:", demand)
-                # TODO handle transaction
+            response = self.peer.handle_transaction_request(request)
+            self.cli_socket.send(response.encode())
 
         else:
             return False

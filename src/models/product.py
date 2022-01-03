@@ -22,3 +22,10 @@ class Product(BaseModel):
             if keyword.lower() in self.keywords:
                 return True
         return False
+
+    def can_be_exchanged_with(self, product: Product):
+        return (
+            self.name == product.name
+            and self.unit_key == product.unit_key
+            and self.amount >= product.amount
+        )
