@@ -23,7 +23,7 @@ class Product(BaseModel):
                 return True
         return False
 
-    def can_be_exchanged_with(self, product: Product):
+    def can_be_exchanged_with(self, product):
         return (
             self.name == product.name
             and self.unit_key == product.unit_key
