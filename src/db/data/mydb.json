@@ -9,13 +9,13 @@
         {
             "name": "Apple",
             "unit_key": "KG",
-            "desc": "",
+            "desc": "elma işte",
             "amount": 3
         },
         {
             "name": "Cherry",
             "unit_key": "KG",
-            "desc": "",
+            "desc": "kiraz",
             "amount": 4
         }
     ],

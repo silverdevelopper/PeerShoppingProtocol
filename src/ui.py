@@ -10,8 +10,14 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from db_operations import DataBase
+
 
 class Ui_MainWindow(object):
+    def __init__(self) -> None:
+        super().__init__()
+        
+        
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -25,9 +31,18 @@ class Ui_MainWindow(object):
         self.Products.setTabletTracking(True)
         self.Products.setAutoFillBackground(False)
         self.Products.setObjectName("Products")
-        self.tableView = QtWidgets.QTableView(self.Products)
+        
+        self.tableView:QtWidgets.QTableView = QtWidgets.QTableView(self.Products)
         self.tableView.setGeometry(QtCore.QRect(30, 10, 381, 451))
         self.tableView.setObjectName("tableView")
+        self.model = QtGui.QStandardItemModel()
+        self.model.setHorizontalHeaderLabels(['Name', 'Unit', 'Desc', 'Amount'])
+
+                
+        self.init_data()
+        self.tableView.setModel(self.model)
+      
+        #self.tableView.
         self.pushButton_2 = QtWidgets.QPushButton(self.Products)
         self.pushButton_2.setGeometry(QtCore.QRect(430, 10, 113, 32))
         self.pushButton_2.setObjectName("pushButton_2")
@@ -92,3 +107,33 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Peers), _translate("MainWindow", "Peers"))
         self.pushButton.setText(_translate("MainWindow", "Delete"))
     
+    def init_data(self):
+        db = DataBase()
+        data = db.read_db_as_list()
+        for i,row in enumerate(data):
+            for j,col in enumerate(row):
+                item = QtGui.QStandardItem()
+                item.setToolTip(str(i))
+                item.setText(str(data[i][j]))
+                self.model.setItem(i,j,item)
+    
+class TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == QtCore.Qt.DisplayRole:
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
+
+    def rowCount(self, index):
+        # The length of the outer list.
+        return len(self._data)
+
+    def columnCount(self, index):
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])

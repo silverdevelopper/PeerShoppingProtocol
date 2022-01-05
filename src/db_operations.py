@@ -23,4 +23,11 @@ class DataBase:
         if os.path.isfile(self.db_path):
             with open(self.db_path,"r") as fp:
                 self.mydb =  json.load(fp)
-        print(self.mydb)
+    
+    def read_db_as_list(self):
+        if self.mydb == None:
+            return []
+        data = []
+        for i,row in enumerate(self.mydb["products"]):
+            data.append(list(row.values()))
+        return data
