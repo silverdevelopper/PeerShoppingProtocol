@@ -2,6 +2,7 @@ import threading
 from models.peer_info import PeerInfo
 from models.demand import Demand
 from models.offer import Offer
+from models.product import Product
 from models.transaction import TransactionRequest
 from tracker import Tracker
 from uuid import uuid4
@@ -17,10 +18,12 @@ class Peer(Tracker):
         keywords: str = "",
         demands: list = [],
         offers: list = [],
+        trade_history: dict = {},
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
         self.demands = demands
         self.offers = offers
+        self.trade_history = trade_history
         self.subscribers: list = []
 
     def to_string(self, prefix=""):
@@ -73,32 +76,55 @@ class Peer(Tracker):
         # return if the message was sent successfully
         return response == "MO"
 
+    def send_transaction_request(self, offer_or_demand, target_uuid: str, 
+                                 offer_demand_uuid: str, exchange_product: Product):
+        ta_request = TransactionRequest(uuid4(), offer_or_demand, target_uuid, offer_demand_uuid, exchange_product)
+        
+        #TODO: obje mi eklensin yoksa to_str mi?
+        self.trade_history[ta_request.ta_uuid] = ta_request
+
+        peer_socket = self.connect_to_peer(target_uuid)
+        if peer_socket is None:
+            return False
+
+        peer_socket.send(ta_request.to_string().encode())
+        response = peer_socket.recv(1024).decode().strip()
+        peer_socket.close()
+
+        # return if the message was sent successfully
+        return response == "TO"
+
     def handle_transaction_request(self, request: TransactionRequest):
         if request.mode == "D":
             # check if peer have the exchange product in any offer
-            for offer in self.offers:
-                if offer.offered_product.can_be_exchanged_with(request.exc_product):
-                    # remove offer or reduce its amount
-                    if offer.offered_product.amount == request.exc_product.amount:
-                        self.__remove_offer_by_id(offer.uuid)
-                    else:
-                        offer.offered_product.amount -= request.exc_product.amount
+            to_offer = self.get_offer_by_id(request.offer_demand_uuid)
+            if to_offer.offered_product.can_be_exchanged_with(request.exc_product):
+                # remove offer or reduce its amount
+                if to_offer.offered_product.amount <= request.exc_product.amount:
+                    self.__remove_offer_by_id(to_offer.uuid)
+                else:
+                    to_offer.offered_product.amount -= request.exc_product.amount
 
+            #Kaldirdim cunku demand bizim degil, karsinin
             # remove demand
-            self.__remove_demand_by_id(request.offer_or_demand.uuid)
+            #self.__remove_demand_by_id(request.offer_demand_uuid)
+            self.trade_history[request.ta_uuid] = request
             return "TD"
 
         if request.mode == "O":
             # check if peer want the exchange product in any demand
-            for demand in self.demands:
-                if demand.requested_product.can_be_exchanged_with(request.exc_product):
-                    # remove demand or reduce its amount
-                    if demand.requested_product.amount == request.exc_product.amount:
-                        self.__remove_demand_by_id(demand.uuid)
-                    else:
-                        demand.requested_product.amount -= request.exc_product.amount
+            to_demand = self.get_demand_by_id(request.offer_demand_uuid)
+            if to_demand.requested_product.can_be_exchanged_with(request.exc_product):
+                # remove demand or reduce its amount
+                if to_demand.requested_product.amount <= request.exc_product.amount:
+                    self.__remove_demand_by_id(to_demand.uuid)
+                else:
+                    to_demand.requested_product.amount -= request.exc_product.amount
+            
+            #Kaldirdim cunku offer bizim degil, karsinin
             # remove offer
-            self.__remove_offer_by_id(request.offer_or_demand.uuid)
+            #self.__remove_offer_by_id(request.offer_demand_uuid)
+            self.trade_history[request.ta_uuid] = request
             return "TD"
 
         return "TN"

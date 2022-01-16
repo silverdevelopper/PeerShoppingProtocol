@@ -8,15 +8,17 @@ from models.product import Product
 class TransactionRequest(BaseModel):
     def __init__(
         self,
-        type: str,
+        ta_uuid: str,
+        mode: str,
         peer_uuid: str,
-        offer_or_demand: Union[Offer, Demand],
+        offer_demand_uuid: str,
         exc_product: Product,
     ):
-        self.type = type
+        self.ta_uuid = ta_uuid
+        self.mode = mode
         self.peer_uuid = peer_uuid
         self.exc_product = exc_product
-        self.offer_or_demand = offer_or_demand
+        self.offer_demand_uuid = offer_demand_uuid
 
     def to_string(self, prefix: str):
         return f"{prefix}::{self.type}::{self.offer_or_demand.uuid}::{self.exc_product.to_string()}"
