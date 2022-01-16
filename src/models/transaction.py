@@ -17,8 +17,8 @@ class TransactionRequest(BaseModel):
         self.ta_uuid = ta_uuid
         self.mode = mode
         self.peer_uuid = peer_uuid
-        self.exc_product = exc_product
         self.offer_demand_uuid = offer_demand_uuid
+        self.exc_product = exc_product
 
     def to_string(self, prefix: str):
         return f"{prefix}::{self.type}::{self.offer_or_demand.uuid}::{self.exc_product.to_string()}"

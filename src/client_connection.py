@@ -9,6 +9,7 @@ from models.product import Product
 from models.transaction import TransactionRequest
 from tracker import Tracker
 from peer import Peer
+from uuid import uuid4
 
 
 class TrackerConnectionThread(threading.Thread):
@@ -183,22 +184,26 @@ class PeerConnectionThread(TrackerConnectionThread):
 
             (
                 mode,
-                demand_or_offer_id,
+                demand_offer_uuid,
                 exchange_name,
                 exchange_unit,
                 exchange_amount,
             ) = request_tokens
 
-            offer_or_demand = self.peer.get_demand_by_id(
-                demand_or_offer_id
-            ) or self.peer.get_offer_by_id(demand_or_offer_id)
+            if mode == "D":
+                offer_or_demand = self.peer.get_demand_by_id(demand_offer_uuid) 
+            elif mode == "O":
+                offer_or_demand = self.peer.get_offer_by_id(demand_offer_uuid)
+            else:
+                self.cli_socket.send("TN".encode())
+                return True
 
             if offer_or_demand is None:
                 self.cli_socket.send("TN".encode())
                 return True
 
             product = Product(exchange_name, exchange_unit, exchange_amount)
-            request = TransactionRequest(mode, self.peer.uuid, offer_or_demand, product)
+            request = TransactionRequest(uuid4(), mode, self.peer.uuid, demand_offer_uuid, product)
 
             response = self.peer.handle_transaction_request(request)
             self.cli_socket.send(response.encode())
