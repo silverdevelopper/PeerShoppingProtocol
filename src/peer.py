@@ -1,4 +1,5 @@
 import threading
+from typing import Tuple
 from models.peer_info import PeerInfo
 from models.demand import Demand
 from models.offer import Offer
@@ -25,6 +26,7 @@ class Peer(Tracker):
         self.offers = offers
         self.trade_history = trade_history
         self.subscribers: list = []
+        self.block_list: list = []
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -34,6 +36,29 @@ class Peer(Tracker):
 
     def remove_subscriber(self, peer_uuid):
         self.subscribers.remove(peer_uuid)
+
+    def is_subscribed(self, peer_uuid: str):
+        return peer_uuid in self.subscribers
+
+    def add_peer_to_block_list(self, peer_uuid: str):
+        self.block_list.append(peer_uuid)
+        if self.is_subscribed(peer_uuid):
+            self.remove_subscriber(peer_uuid)
+
+    def remove_peer_from_block_list(self, peer_uuid: str):
+        self.block_list.remove(peer_uuid)
+
+    def is_blocked(self,peer_uuid: str):
+        return peer_uuid in self.block_list
+
+    def get_peers(self):
+        return [peer for peer in super().get_peers() if peer.uuid not in self.block_list]
+
+    def get_peer_by_address(self, address: Tuple[str, int]):
+        peer = super().get_peer_by_address(address)
+        if peer is None or self.is_blocked(peer.uuid):
+            return None
+        return peer
 
     def get_offer_by_id(self, offer_id):
         for offer in self.offers:
