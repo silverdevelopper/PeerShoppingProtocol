@@ -78,6 +78,11 @@ def start_intelligent_home():
         while True:
             try:
                 (client_socket, client_address) = server_socket.accept()
+                if client_address in peer.block_list:
+                    client_socket.close()
+                    logging.info(f"Rejeted connection from blocked IP:{client_address[0]}")
+                    continue
+
                 logging.info(f"New connection from IP:{client_address[0]}")
 
                 new_thread = PeerConnectionThread(peer, client_socket, client_address)
