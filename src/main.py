@@ -14,6 +14,7 @@ from tracker import Tracker
 from uuid import uuid4
 
 HOST, PORT = "0.0.0.0", 23456
+killswitch = False
 
 current_path = str(Path(__file__))
 log_dir = os.path.join(os.path.normpath(current_path + os.sep + os.pardir), "logs")
@@ -29,6 +30,7 @@ logging.basicConfig(
 
 
 def start_tracker():
+    global killswitch
     tracker = Tracker(uuid4(), HOST, PORT, geoloc="Istanbul")
     all_threads = []
 
@@ -45,16 +47,24 @@ def start_tracker():
             try:
                 (client_socket, client_address) = server_socket.accept()
                 logging.info(f"New connection from IP:{client_address[0]}")
+                client_socket.settimeout(0.8)
                 new_thread = TrackerConnectionThread(
                     tracker, client_socket, client_address
                 )
                 all_threads.append(new_thread)
                 new_thread.start()
 
-            except socket.timeout as e:
-                print("Timeout! Tracker shutting down...", e)
-                logging.debug("Timeout! Tracker shutting down...")
-                return
+                if killswitch:
+                    break
+
+            except socket.timeout:
+                #print("Timeout! Tracker shutting down...", e)
+                #logging.debug("Timeout! Tracker shutting down...")
+                #return
+                if killswitch:
+                    break
+                else:
+                    continue
             except KeyboardInterrupt:
                 for thread in all_threads:
                     thread.join()
@@ -66,6 +76,7 @@ def start_tracker():
 peer = None
 def start_intelligent_home():
     global peer
+    global killswitch
     if len(sys.argv) != 4:
         info()
         raise Exception("Command line expect tracker ip and port")
@@ -92,12 +103,15 @@ def start_intelligent_home():
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((HOST, PORT))
         server_socket.listen(0)
-        # server_socket.settimeout(1)
+        server_socket.settimeout(1)
         print("Listening...")
 
         while True:
             try:
+                print(killswitch)
                 (client_socket, client_address) = server_socket.accept()
+                #client_socket.settimeout(0.8)
+
                 if client_address in peer.block_list:
                     client_socket.send("BL::T\n".encode())
                     client_socket.close()
@@ -110,15 +124,25 @@ def start_intelligent_home():
                 all_threads.append(new_thread)
                 new_thread.start()
 
-            except socket.timeout:
-                continue
+                if killswitch:
+                    break
+
+            except socket.timeout as e:
+                if killswitch:
+                    break
+                else:
+                    continue
             except KeyboardInterrupt:
                 for thread in all_threads:
                     thread.join()
 
                 logging.debug("Tracker shutting down...")
                 return
-
+        
+        print("EXITING")
+        for thread in all_threads:
+            thread.parse_request("QU")
+            thread.join()
 
 # To start Peer use -a command line
 def info():
@@ -131,6 +155,7 @@ def info():
 
 
 def main():
+    global killswitch
     if len(sys.argv) == 1:
         info()
         return
@@ -145,6 +170,7 @@ def main():
         app_ui = AppUi(peer)
         app_ui.run()
 
+        killswitch = True
         peer_thread.join()
 
 

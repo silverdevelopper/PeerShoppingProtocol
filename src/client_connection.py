@@ -30,6 +30,7 @@ class TrackerConnectionThread(threading.Thread):
             request = self.cli_socket.recv(1024).decode().strip()
             logging.info(f"{self.cli_address[0]} > {request}")
             is_understood = self.parse_request(request)
+            print(f"{request} --- {self.is_listening}")
 
             if not is_understood:
                 try:
@@ -39,6 +40,8 @@ class TrackerConnectionThread(threading.Thread):
                     print(e)
                     self.is_listening = False
                     # raise Exception(str(e)+"\n Request:"+request)
+
+        print("Thread ENDED")
 
     def parse_request(self, request: str):
         request_type, *request_tokens = request.split("::")
@@ -51,7 +54,7 @@ class TrackerConnectionThread(threading.Thread):
             self.client_peer_info = peer_info
             return True
 
-        elif request_type == "QU":
+        elif request_type == "QU" or request_type == "BY":
             self.cli_socket.send("BY\n".encode())
             self.cli_socket.close()
             logging.info(f"Connection ended with IP: {self.cli_address[0]}\n")
