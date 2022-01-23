@@ -82,11 +82,13 @@ class Peer(Tracker):
                 continue
         else:
             self.products.append(product)
+        self.run_on_change_callbacks()
 
     def remove_product(self, product: Product):
         for prod in self.products:
             if prod.name == product.name:
                 self.products.remove(product)
+        self.run_on_change_callbacks()
 
     def list_products(self):
         return [prod.to_string() for prod in self.products]

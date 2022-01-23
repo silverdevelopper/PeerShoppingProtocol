@@ -148,16 +148,12 @@ class Ui_MainWindow(object):
                 self.peers_model.setItem(i,j,item)   
                     
     def save_edit_products(self):
-        db = DataBase()
-        db.save_edit_products(
-            Product(
+        product = Product(
                 name=self.lineEdit.text(),
                 unit_key=self.lineEdit_2.text(),
                 amount= self.lineEdit_3.text(),
-                keywords="hebele"
-            )
-        )
-        self.init_data()
+                keywords="hebele")
+        self.peer.add_product(product)
         
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
