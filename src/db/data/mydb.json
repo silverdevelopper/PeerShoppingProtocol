@@ -10,14 +10,31 @@
         {
             "name": "Apple",
             "unit_key": "KG",
-            "desc": "",
+            "desc": "elma i\u015fte",
             "amount": 3
         },
         {
             "name": "Cherry",
             "unit_key": "KG",
-            "desc": "",
+            "desc": "kiraz",
             "amount": 4
+        },
+        {
+            "name": "elma",
+            "unit_key": "1",
+            "amount": "KG"
+        },
+        {
+            "name": "hiyar",
+            "unit_key": "1",
+            "desc": "kisalatalıkraz",
+            "amount": "kg"
+        },
+        {
+            "name": "s\u00fct",
+            "unit_key": "1",
+            "desc": "sütt",
+            "amount": "litre"
         }
     ],
     "peers": {
