@@ -27,6 +27,7 @@ class Peer(Tracker):
         self.trade_history = trade_history
         self.subscribers: list = []
         self.block_list: list = []
+        self.blocked_from: list = []
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -47,6 +48,15 @@ class Peer(Tracker):
 
     def remove_peer_from_block_list(self, peer_uuid: str):
         self.block_list.remove(peer_uuid)
+
+    def add_peer_to_blocked_from(self, peer_uuid: str):
+        self.blocked_from.append(peer_uuid)
+        if self.is_subscribed(peer_uuid):
+            self.remove_subscriber(peer_uuid)
+    
+    #Adi garip biliyorum ama tutarli olsun diye yaptim
+    def remove_peer_from_blocked_from(self, peer_uuid: str):
+        self.blocked_from.remove(peer_uuid)
 
     def is_blocked(self,peer_uuid: str):
         return peer_uuid in self.block_list

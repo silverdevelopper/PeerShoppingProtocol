@@ -79,6 +79,7 @@ def start_intelligent_home():
             try:
                 (client_socket, client_address) = server_socket.accept()
                 if client_address in peer.block_list:
+                    client_socket.send("BL::T\n".encode())
                     client_socket.close()
                     logging.info(f"Rejeted connection from blocked IP:{client_address[0]}")
                     continue

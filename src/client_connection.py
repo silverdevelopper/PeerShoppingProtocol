@@ -110,6 +110,10 @@ class PeerConnectionThread(TrackerConnectionThread):
 
             if mode == "N":
                 amount = int(request_tokens[1])
+
+                if amount < 0:
+                    return False
+                
                 demands_to_send = self.peer.demands[:amount]
 
             elif mode == "K":
@@ -141,12 +145,18 @@ class PeerConnectionThread(TrackerConnectionThread):
 
             if mode == "N":
                 amount = int(request_tokens[1])
+
+                if amount < 0:
+                    return False
+                
                 offers_to_send = self.peer.offers[:amount]
 
             elif mode == "K":
                 keywords = request_tokens[1].split(",")
                 offers_to_send = [
-                    offer for offer in self.peer.offers if offer.has_keywords(keywords)
+                    offer 
+                    for offer in self.peer.offers 
+                    if offer.has_keywords(keywords)
                 ]
             else:
                 return False
@@ -207,6 +217,18 @@ class PeerConnectionThread(TrackerConnectionThread):
 
             response = self.peer.handle_transaction_request(request)
             self.cli_socket.send(response.encode())
+
+        elif request_type == "BL":
+            is_blocked = request_tokens[0]
+
+            if is_blocked == "T":
+                self.peer.add_peer_to_blocked_from(self.client_peer_info.uuid)
+                self.cli_socket.send("BO\n".encode())
+            elif is_blocked == "F":
+                self.peer.remove_peer_from_blocked_from(self.client_peer_info.uuid)
+                self.cli_socket.send("BO\n".encode())
+            else:
+                return False
 
         else:
             return False
