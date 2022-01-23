@@ -89,12 +89,14 @@ class Peer(Tracker):
         new_offer = Offer(offer_uuid, name, offered_product, exchange_product)
         self.offers.append(new_offer)
         self.__notify_offer_change()
+        self.run_on_change_callbacks()
 
     def create_demand(self, name, requested_product, exchange_product):
         demand_uuid = uuid4()
         new_demand = Demand(demand_uuid, name, requested_product, exchange_product)
         self.demands.append(new_demand)
         self.__notify_demand_change()
+        self.run_on_change_callbacks()
 
     def receive_message(self, message: str, sender: PeerInfo):
         print("received the following message from", sender.to_string())
@@ -171,13 +173,15 @@ class Peer(Tracker):
             if demand.uuid == demand_id:
                 self.demands.remove(demand)
                 self.__notify_demand_change()
+                self.run_on_change_callbacks()
                 return
 
     def __remove_offer_by_id(self, offer_id: str):
         for offer in self.offers:
             if offer.uuid == offer_id:
                 self.offers.remove(offer)
-                self.__notify_offer_change()
+                self.__notify_offer_change()        
+                self.run_on_change_callbacks()
                 return
 
     def __notify_demand_change(self):

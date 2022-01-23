@@ -22,3 +22,9 @@ class Demand(BaseModel):
         return self.requested_product.has_keywords(
             keywords
         ) or self.exchange_product.has_keywords(keywords)
+        
+    '''
+    It returns Demand Uuid, Demand Name, Requested Product Name, Requested Product Amount,  Exchange Product Name, Exchange Product Name
+    '''
+    def to_list(self):
+        return [self.uuid,self.name,self.requested_product.name,self.requested_product.amount,self.exchange_product.name,self.exchange_product.amount]
