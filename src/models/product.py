@@ -12,7 +12,7 @@ class Product(BaseModel):
         super().__init__(name, name)
         self.unit_key = unit_key
         self.amount = amount
-        self.keywords = keywords
+        self.keywords = [kw.lower() for kw in keywords]
 
     def to_string(self):
         return f"{self.name}::{self.unit_key}::{self.amount}"
