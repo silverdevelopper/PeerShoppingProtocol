@@ -22,8 +22,8 @@ class Tracker:
         self.peers: dict[str, PeerInfo] = dict()
         self.info = PeerInfo(uuid, ip, port, geoloc, type, keywords)
         self.uuid = uuid
-        self.register(self.info)
-        self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
+        #self.register(self.info)
+        #self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
 
     def register(self, request_or_peer: Union[str, PeerInfo]):
         if isinstance(request_or_peer, PeerInfo):

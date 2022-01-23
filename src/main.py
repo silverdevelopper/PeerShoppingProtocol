@@ -4,11 +4,13 @@ import socket
 import sys
 from client_connection import PeerConnectionThread, TrackerConnectionThread
 from pathlib import Path
+from db_operations import DataBase
+from models.peer_info import PeerInfo
 from peer import Peer
 from tracker import Tracker
 from uuid import uuid4
 
-host, port = "0.0.0.0", 23456
+HOST, PORT = "0.0.0.0", 23456
 
 current_path = str(Path(__file__))
 log_dir = os.path.join(os.path.normpath(current_path + os.sep + os.pardir), "logs")
@@ -24,12 +26,12 @@ logging.basicConfig(
 
 
 def start_tracker():
-    tracker = Tracker(uuid4(), host, port, geoloc="Istanbul")
+    tracker = Tracker(uuid4(), HOST, PORT, geoloc="Istanbul")
     all_threads = []
 
     with socket.socket() as server_socket:
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind((host, port))
+        server_socket.bind((HOST, PORT))
         server_socket.listen(0)
         # server_socket.settimeout(10)
 
@@ -66,11 +68,18 @@ def start_intelligent_home():
     all_threads = []
     port = int(sys.argv[3])
     host = sys.argv[2]
+
     peer = Peer(uuid4(), host, port, geoloc="Istanbul")
+    
+    db = DataBase()
+    for raw_peer_info in db.read_peers_as_list():
+        name,uuid,ip,port,desc,location = raw_peer_info
+        peer_info = PeerInfo(uuid,ip,port,location,"A",keywords=name+desc)
+        peer.register(peer_info)
 
     with socket.socket() as server_socket:
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind((host, port))
+        server_socket.bind((HOST, PORT))
         server_socket.listen(0)
         # server_socket.settimeout(1)
         print("Listening...")

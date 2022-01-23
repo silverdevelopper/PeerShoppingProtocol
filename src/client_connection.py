@@ -21,6 +21,7 @@ class TrackerConnectionThread(threading.Thread):
         self.tracker = tracker
         self.cli_address = cli_address
         self.is_listening = True
+        self.client_peer_info = None
 
     def run(self):
         self.cli_socket.send(f"HE::{self.tracker.uuid}".encode())
@@ -48,6 +49,7 @@ class TrackerConnectionThread(threading.Thread):
             self.cli_socket.send(response.encode())
             logging.info(f"{self.cli_address[0]} < {response}")
             self.client_peer_info = peer_info
+            return True
 
         # all requests below this point require peer to be registered
         if self.client_peer_info is None:
