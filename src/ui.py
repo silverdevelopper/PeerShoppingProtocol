@@ -28,7 +28,6 @@ class Ui_MainWindow(object):
         peer.on_receive_message_callbacks.append(self.show_received_message)
 
     def show_received_message(self, message:str, sender: PeerInfo):
-        print(message,sender.to_string("Peer"))
         dlg = QtWidgets.QMessageBox(self.centralwidget)
         dlg.setWindowTitle("Message Received!")
         dlg.setText(f"{sender.name} says: {message}")

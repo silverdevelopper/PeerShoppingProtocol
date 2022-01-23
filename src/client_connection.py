@@ -51,18 +51,19 @@ class TrackerConnectionThread(threading.Thread):
             self.client_peer_info = peer_info
             return True
 
+        elif request_type == "QU":
+            self.cli_socket.send("BY\n".encode())
+            self.cli_socket.close()
+            logging.info(f"Connection ended with IP: {self.cli_address[0]}\n")
+            self.is_listening = False
+            return True
+
         # all requests below this point require peer to be registered
         if self.client_peer_info is None:
             return False
 
         if request_type == "IG":
             self.cli_socket.send(f"OG::{self.tracker.uuid}\n".encode())
-
-        elif request_type == "QU":
-            self.cli_socket.send("BY\n".encode())
-            self.cli_socket.close()
-            logging.info(f"Connection ended with IP: {self.cli_address[0]}\n")
-            self.is_listening = False
 
         elif request_type == "CS":
             peers = self.tracker.get_peers()
