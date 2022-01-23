@@ -24,10 +24,21 @@ class DataBase:
             with open(self.db_path,"r") as fp:
                 self.mydb =  json.load(fp)
     
-    def read_db_as_list(self):
+    def read_products_as_list(self):
         if self.mydb == None:
             return []
         data = []
         for i,row in enumerate(self.mydb["products"]):
             data.append(list(row.values()))
         return data
+
+    def read_peers_as_list(self):
+        if self.mydb == None:
+            return []
+        data = []
+        for i,row in enumerate(self.mydb["peers"]):
+            data.append(list(self.mydb["peers"][row].values()))
+        return data
+    
+    def save_edit_products(self):
+        pass

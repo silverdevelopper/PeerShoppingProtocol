@@ -35,12 +35,12 @@ class Ui_MainWindow(object):
         self.tableView:QtWidgets.QTableView = QtWidgets.QTableView(self.Products)
         self.tableView.setGeometry(QtCore.QRect(30, 10, 381, 451))
         self.tableView.setObjectName("tableView")
-        self.model = QtGui.QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(['Name', 'Unit', 'Desc', 'Amount'])
+        self.products_model = QtGui.QStandardItemModel()
+        self.products_model.setHorizontalHeaderLabels(['Name', 'Unit', 'Desc', 'Amount'])
 
                 
         self.init_data()
-        self.tableView.setModel(self.model)
+        self.tableView.setModel(self.products_model)
       
         #self.tableView.
         self.pushButton_2 = QtWidgets.QPushButton(self.Products)
@@ -49,9 +49,12 @@ class Ui_MainWindow(object):
         self.pushButton_3 = QtWidgets.QPushButton(self.Products)
         self.pushButton_3.setGeometry(QtCore.QRect(550, 10, 113, 32))
         self.pushButton_3.setObjectName("pushButton_3")
-        self.pushButton_4 = QtWidgets.QPushButton(self.Products)
-        self.pushButton_4.setGeometry(QtCore.QRect(590, 140, 113, 32))
-        self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_save_add = QtWidgets.QPushButton(self.Products)
+        self.pushButton_save_add.setGeometry(QtCore.QRect(590, 140, 113, 32))
+        self.pushButton_save_add.setObjectName("pushButton_save_add")
+       
+        self.pushButton_save_add.clicked.connect(self.save_edit_products)
+        
         self.label = QtWidgets.QLabel(self.Products)
         self.label.setGeometry(QtCore.QRect(440, 50, 91, 16))
         self.label.setObjectName("label")
@@ -73,12 +76,18 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.Products, "")
         self.Peers = QtWidgets.QWidget()
         self.Peers.setObjectName("Peers")
-        self.listView = QtWidgets.QListView(self.Peers)
-        self.listView.setGeometry(QtCore.QRect(0, 0, 301, 471))
-        self.listView.setObjectName("listView")
+
+        # init peers data
+        self.tableView:QtWidgets.QTableView = QtWidgets.QTableView(self.Peers)
+        self.tableView.setGeometry(QtCore.QRect(30, 10, 500, 451))
+        self.tableView.setObjectName("tableView")
+        self.peers_model = QtGui.QStandardItemModel()
+        self.peers_model.setHorizontalHeaderLabels(['Name', 'Uuid','Ip','Port','Desc', 'Geoloc'])
+        self.init_peers_data()
+        self.tableView.setModel(self.peers_model)
         
         self.pushButton = QtWidgets.QPushButton(self.Peers)
-        self.pushButton.setGeometry(QtCore.QRect(310, 10, 113, 32))
+        self.pushButton.setGeometry(QtCore.QRect(550, 10, 113, 32))
         self.pushButton.setObjectName("pushButton")
         self.tabWidget.addTab(self.Peers, "")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -99,7 +108,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "PeerToPeerShoping"))
         self.pushButton_2.setText(_translate("MainWindow", "Edit"))
         self.pushButton_3.setText(_translate("MainWindow", "Delete"))
-        self.pushButton_4.setText(_translate("MainWindow", "Save/Add"))
+        self.pushButton_save_add.setText(_translate("MainWindow", "Save/Add"))
         self.label.setText(_translate("MainWindow", "Product Name"))
         self.label_2.setText(_translate("MainWindow", "Amount"))
         self.label_3.setText(_translate("MainWindow", "Unit"))
@@ -109,14 +118,27 @@ class Ui_MainWindow(object):
     
     def init_data(self):
         db = DataBase()
-        data = db.read_db_as_list()
+        data = db.read_products_as_list()
         for i,row in enumerate(data):
             for j,col in enumerate(row):
                 item = QtGui.QStandardItem()
                 item.setToolTip(str(i))
                 item.setText(str(data[i][j]))
-                self.model.setItem(i,j,item)
-    
+                self.products_model.setItem(i,j,item)
+ 
+    def init_peers_data(self):
+        db = DataBase()
+        data = db.read_peers_as_list()
+        for i,row in enumerate(data):
+            for j,col in enumerate(row):
+                item = QtGui.QStandardItem()
+                item.setToolTip(str(i))
+                item.setText(str(data[i][j]))
+                self.peers_model.setItem(i,j,item)   
+                    
+    def save_edit_products(self):
+        print("Clicked!")
+        
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(TableModel, self).__init__()
