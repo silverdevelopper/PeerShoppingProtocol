@@ -9,7 +9,7 @@
         {
             "name": "Apple",
             "unit_key": "KG",
-            "desc": "elma işte",
+            "desc": "elma i\u015fte",
             "amount": 3
         },
         {
@@ -17,6 +17,11 @@
             "unit_key": "KG",
             "desc": "kiraz",
             "amount": 4
+        },
+        {
+            "name": "elma",
+            "unit_key": "1",
+            "amount": "KG"
         }
     ],
     "peers": {

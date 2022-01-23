@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from db_operations import DataBase
+from models.product import Product
 
 
 class Ui_MainWindow(object):
@@ -137,7 +138,11 @@ class Ui_MainWindow(object):
                 self.peers_model.setItem(i,j,item)   
                     
     def save_edit_products(self):
-        print("Clicked!")
+        db = DataBase()
+        data = db.read_peers_as_list()
+        db.save_edit_products(Product(self.lineEdit.text(),self.lineEdit_2.text(),self.lineEdit_3.text()))
+        print(self.lineEdit.text(),self.lineEdit_2.text(),self.lineEdit_3.text()," saved..")
+        self.init_data()
         
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
