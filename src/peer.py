@@ -25,15 +25,15 @@ class Peer(Tracker):
         self.demands = demands
         self.offers = offers
         self.trade_history = trade_history
-        self.subscribers: list = []
-        self.block_list: list = []
-        self.blocked_from: list = []
+        self.subscribers: set = set()
+        self.block_list: set = set()
+        self.blocked_from: set = set()
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
 
     def add_subscriber(self, peer_uuid):
-        self.subscribers.append(peer_uuid)
+        self.subscribers.add(peer_uuid)
 
     def remove_subscriber(self, peer_uuid):
         self.subscribers.remove(peer_uuid)
@@ -43,7 +43,7 @@ class Peer(Tracker):
 
     def add_peer_to_block_list(self, peer_uuid: str):
         if peer_uuid not in self.block_list:
-            self.block_list.append(peer_uuid)
+            self.block_list.add(peer_uuid)
         if self.is_subscribed(peer_uuid):
             self.remove_subscriber(peer_uuid)
 
@@ -52,7 +52,7 @@ class Peer(Tracker):
 
     def add_peer_to_blocked_from(self, peer_uuid: str):
         if peer_uuid not in self.blocked_from:
-            self.blocked_from.append(peer_uuid)
+            self.blocked_from.add(peer_uuid)
         if self.is_subscribed(peer_uuid):
             self.remove_subscriber(peer_uuid)
     
