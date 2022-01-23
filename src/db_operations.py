@@ -50,16 +50,16 @@ class DataBase:
             if p["name"] == product.name:
                 self.mydb["products"][i] = {
                     "name": product.name,
-                    "desc":"",
                     "unit_key": product.unit_key,
+                    "desc": product.keywords,
                     "amount": product.amount
                 }
                 self.update_db()
                 return
         self.mydb["products"].append({
             "name": product.name,
-            "desc" : "",
             "unit_key": product.unit_key,
+            "desc" : product.keywords,
             "amount": product.amount
         })
         self.update_db()

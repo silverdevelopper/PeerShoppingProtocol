@@ -124,13 +124,13 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Delete"))
     
     def init_data(self):
-        db = DataBase()
-        data = db.read_products_as_list()
-        for i,row in enumerate(data):
+        all_products = [prod.split("::") for prod in self.peer.list_products()]
+        
+        for i,row in enumerate(all_products):
             for j,col in enumerate(row):
                 item = QtGui.QStandardItem()
                 item.setToolTip(str(i))
-                item.setText(str(data[i][j]))
+                item.setText(str(all_products[i][j]))
                 self.products_model.setItem(i,j,item)
  
     def init_peers_data(self):
@@ -153,7 +153,8 @@ class Ui_MainWindow(object):
             Product(
                 name=self.lineEdit.text(),
                 unit_key=self.lineEdit_2.text(),
-                amount= self.lineEdit_3.text()
+                amount= self.lineEdit_3.text(),
+                keywords="hebele"
             )
         )
         self.init_data()

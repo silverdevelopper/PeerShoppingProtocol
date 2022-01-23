@@ -20,20 +20,45 @@
         },
         {
             "name": "elma",
-            "unit_key": "1",
-            "amount": "KG"
+            "unit_key": "KG",
+            "desc": "kurtlu elma",
+            "amount": 1
         },
         {
             "name": "hiyar",
-            "unit_key": "1",
-            "desc": "kisalatalıkraz",
-            "amount": "kg"
+            "unit_key": "kg",
+            "desc": "kisa, salatal\u0131k, kiraz",
+            "amount": 1
         },
         {
-            "name": "s\u00fct",
-            "unit_key": "1",
-            "desc": "sütt",
-            "amount": "litre"
+            "name": "sut",
+            "unit_key": "litre",
+            "desc": "sutt",
+            "amount": 1
+        },
+        {
+            "name": "armut",
+            "unit_key": "4",
+            "desc": "",
+            "amount": "KG"
+        },
+        {
+            "name": "Ananas",
+            "unit_key": "35",
+            "desc": "",
+            "amount": "KG"
+        },
+        {
+            "name": "karpuz",
+            "unit_key": "adet",
+            "desc": "",
+            "amount": "3"
+        },
+        {
+            "name": "muzzu",
+            "unit_key": "12",
+            "desc": "hebele",
+            "amount": "KG"
         }
     ],
     "peers": {

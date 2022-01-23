@@ -9,6 +9,7 @@ from pathlib import Path
 from db_operations import DataBase
 from models.peer_info import PeerInfo
 from peer import Peer
+from models.product import Product
 from tracker import Tracker
 from uuid import uuid4
 
@@ -80,6 +81,12 @@ def start_intelligent_home():
         name,uuid,ip,port,desc,location = raw_peer_info
         peer_info = PeerInfo(uuid,ip,port,location,"A",keywords=name+desc)
         peer.register(peer_info)
+
+    for product_info in db.read_products_as_list():
+        p_name, p_unit, p_desc, p_amount = product_info
+        keywords = [kw.strip().lower() for kw in p_desc.split(",")]
+        new_product = Product(p_name, p_unit, p_amount, keywords)
+        peer.add_product(new_product)
 
     with socket.socket() as server_socket:
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
