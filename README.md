@@ -2,9 +2,9 @@
 
 ## Running the application
 
-*from root directory*
+*from root/src directory*
 ~~~~
-$ python src/main.py
+$ python main.py [options: -a -t -gt]
 ~~~~
 ## Folder Structure
     - /src
