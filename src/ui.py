@@ -27,11 +27,11 @@ class Ui_MainWindow(object):
         
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(960, 800)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(-30, 20, 771, 521))
+        self.tabWidget.setGeometry(QtCore.QRect(0, 20, 771, 521))
         self.tabWidget.setObjectName("tabWidget")
         self.Products = QtWidgets.QWidget()
         self.Products.setMouseTracking(True)
@@ -39,6 +39,19 @@ class Ui_MainWindow(object):
         self.Products.setAutoFillBackground(False)
         self.Products.setObjectName("Products")
         
+        self.Offer = QtWidgets.QWidget()
+        self.Offer.setMouseTracking(True)
+        self.Offer.setTabletTracking(True)
+        self.Offer.setAutoFillBackground(False)
+        self.Offer.setObjectName("Offer")
+
+        self.Demand = QtWidgets.QWidget()
+        self.Demand.setMouseTracking(True)
+        self.Demand.setTabletTracking(True)
+        self.Demand.setAutoFillBackground(False)
+        self.Demand.setObjectName("Demand")
+
+        # Product Tab
         self.tableView:QtWidgets.QTableView = QtWidgets.QTableView(self.Products)
         self.tableView.setGeometry(QtCore.QRect(30, 10, 381, 451))
         self.tableView.setObjectName("tableView")
@@ -59,9 +72,7 @@ class Ui_MainWindow(object):
         self.pushButton_save_add = QtWidgets.QPushButton(self.Products)
         self.pushButton_save_add.setGeometry(QtCore.QRect(590, 140, 113, 32))
         self.pushButton_save_add.setObjectName("pushButton_save_add")
-       
         self.pushButton_save_add.clicked.connect(self.save_edit_products)
-        
         self.label = QtWidgets.QLabel(self.Products)
         self.label.setGeometry(QtCore.QRect(440, 50, 91, 16))
         self.label.setObjectName("label")
@@ -81,6 +92,10 @@ class Ui_MainWindow(object):
         self.lineEdit_3.setGeometry(QtCore.QRect(550, 110, 151, 21))
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.tabWidget.addTab(self.Products, "")
+        
+        
+        
+        # Peers Tabs
         self.Peers = QtWidgets.QWidget()
         self.Peers.setObjectName("Peers")
 
@@ -96,7 +111,53 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.Peers)
         self.pushButton.setGeometry(QtCore.QRect(550, 10, 113, 32))
         self.pushButton.setObjectName("pushButton")
+        # --------------------
+        
+        # Offer Tab
+        self.tableView_offer:QtWidgets.QTableView = QtWidgets.QTableView(self.Offer)
+        self.tableView_offer.setGeometry(QtCore.QRect(30, 10, 381, 451))
+        self.tableView_offer.setObjectName("tableView")
+        self.products_model = QtGui.QStandardItemModel()
+        self.products_model.setHorizontalHeaderLabels(['Name', 'Unit', 'Desc', 'Amount'])
+                
+        #self.init_offer_data()
+        self.tableView_offer.setModel(self.products_model)
+      
+        self.pushButton_2_offer = QtWidgets.QPushButton(self.Offer)
+        self.pushButton_2_offer.setGeometry(QtCore.QRect(430, 10, 113, 32))
+        self.pushButton_2_offer.setObjectName("pushButton_2")
+        self.pushButton_3_offer = QtWidgets.QPushButton(self.Offer)
+        self.pushButton_3_offer.setGeometry(QtCore.QRect(550, 10, 113, 32))
+        self.pushButton_3_offer.setObjectName("pushButton_3")
+        self.pushButton_save_add_offer = QtWidgets.QPushButton(self.Offer)
+        self.pushButton_save_add_offer.setGeometry(QtCore.QRect(590, 140, 113, 32))
+        self.pushButton_save_add_offer.setObjectName("pushButton_save_add")
+        #self.pushButton_save_add.clicked.connect(self.save_edit_products)
+        self.label_offer = QtWidgets.QLabel(self.Offer)
+        self.label_offer.setGeometry(QtCore.QRect(440, 50, 91, 16))
+        self.label_offer.setObjectName("label")
+        self.lineEdit_offer = QtWidgets.QLineEdit(self.Offer)
+        self.lineEdit_offer.setGeometry(QtCore.QRect(550, 50, 151, 21))
+        self.lineEdit_offer.setObjectName("lineEdit")
+        self.label_2_offer = QtWidgets.QLabel(self.Offer)
+        self.label_2_offer.setGeometry(QtCore.QRect(440, 80, 60, 16))
+        self.label_2_offer.setObjectName("label_2")
+        self.lineEdit_2_offer = QtWidgets.QLineEdit(self.Offer)
+        self.lineEdit_2_offer.setGeometry(QtCore.QRect(550, 80, 151, 21))
+        self.lineEdit_2_offer.setObjectName("lineEdit_2")
+        self.label_3_offer = QtWidgets.QLabel(self.Offer)
+        self.label_3_offer.setGeometry(QtCore.QRect(440, 110, 60, 16))
+        self.label_3_offer.setObjectName("label_3")
+        self.lineEdit_3_offer = QtWidgets.QLineEdit(self.Offer)
+        self.lineEdit_3_offer.setGeometry(QtCore.QRect(550, 110, 151, 21))
+        self.lineEdit_3_offer.setObjectName("lineEdit_3")
+        self.tabWidget.addTab(self.Offer, "")
+       
+        
         self.tabWidget.addTab(self.Peers, "")
+        self.tabWidget.addTab(self.Offer, "")
+        self.tabWidget.addTab(self.Demand, "")
+        
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
@@ -119,8 +180,19 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Product Name"))
         self.label_2.setText(_translate("MainWindow", "Amount"))
         self.label_3.setText(_translate("MainWindow", "Unit"))
+
+        self.pushButton_2_offer.setText(_translate("MainWindow", "Edit"))
+        self.pushButton_3_offer.setText(_translate("MainWindow", "Delete"))
+        self.pushButton_save_add_offer.setText(_translate("MainWindow", "Save/Add"))
+        self.label_offer.setText(_translate("MainWindow", "Product Name"))
+        self.label_2_offer.setText(_translate("MainWindow", "Amount"))
+        self.label_3_offer.setText(_translate("MainWindow", "Unit"))
+        
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Products), _translate("MainWindow", "Products"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Peers), _translate("MainWindow", "Peers"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Offer), _translate("MainWindow", "Offer"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Demand), _translate("MainWindow", "Demand"))
+        
         self.pushButton.setText(_translate("MainWindow", "Delete"))
     
     def init_data(self):
@@ -149,12 +221,14 @@ class Ui_MainWindow(object):
                     
     def save_edit_products(self):
         db = DataBase()
-        db.save_edit_products(
-            Product(
+        p =   Product(
                 name=self.lineEdit.text(),
-                unit_key=self.lineEdit_2.text(),
-                amount= self.lineEdit_3.text()
+                unit_key=self.lineEdit_3.text(),
+                amount= self.lineEdit_2.text()
             )
+        print(p.name,p.unit_key,p.amount)
+        db.save_edit_products(
+          p
         )
         self.init_data()
         
