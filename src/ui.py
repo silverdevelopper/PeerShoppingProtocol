@@ -149,7 +149,44 @@ class Ui_MainWindow(object):
         self.lineEdit_3_offer.setGeometry(QtCore.QRect(550, 110, 151, 21))
         self.lineEdit_3_offer.setObjectName("lineEdit_3")
         self.tabWidget.addTab(self.Offer, "")
-       
+
+        # demand Tab
+        self.tableView_demand:QtWidgets.QTableView = QtWidgets.QTableView(self.Demand)
+        self.tableView_demand.setGeometry(QtCore.QRect(30, 10, 381, 451))
+        self.tableView_demand.setObjectName("tableView")
+        self.demand_model = QtGui.QStandardItemModel()
+        self.demand_model.setHorizontalHeaderLabels(['Name', 'Unit', 'Desc', 'Amount'])
+        self.tableView_demand.setModel(self.demand_model)
+        self.init_demand_data()
+        self.pushButton_2_demand = QtWidgets.QPushButton(self.Demand)
+        self.pushButton_2_demand.setGeometry(QtCore.QRect(430, 10, 113, 32))
+        self.pushButton_2_demand.setObjectName("pushButton_2")
+        self.pushButton_3_demand = QtWidgets.QPushButton(self.Demand)
+        self.pushButton_3_demand.setGeometry(QtCore.QRect(550, 10, 113, 32))
+        self.pushButton_3_demand.setObjectName("pushButton_3")
+        self.pushButton_save_add_demand = QtWidgets.QPushButton(self.Demand)
+        self.pushButton_save_add_demand.setGeometry(QtCore.QRect(590, 140, 113, 32))
+        self.pushButton_save_add_demand.setObjectName("pushButton_save_add")
+        #self.pushButton_save_add.clicked.connect(self.save_edit_products)
+        self.label_demand = QtWidgets.QLabel(self.Demand)
+        self.label_demand.setGeometry(QtCore.QRect(440, 50, 91, 16))
+        self.label_demand.setObjectName("label")
+        self.lineEdit_demand = QtWidgets.QLineEdit(self.Demand)
+        self.lineEdit_demand.setGeometry(QtCore.QRect(550, 50, 151, 21))
+        self.lineEdit_demand.setObjectName("lineEdit")
+        self.label_2_demand = QtWidgets.QLabel(self.Demand)
+        self.label_2_demand.setGeometry(QtCore.QRect(440, 80, 60, 16))
+        self.label_2_demand.setObjectName("label_2")
+        self.lineEdit_2_demand = QtWidgets.QLineEdit(self.Demand)
+        self.lineEdit_2_demand.setGeometry(QtCore.QRect(550, 80, 151, 21))
+        self.lineEdit_2_demand.setObjectName("lineEdit_2")
+        self.label_3_demand = QtWidgets.QLabel(self.Demand)
+        self.label_3_demand.setGeometry(QtCore.QRect(440, 110, 60, 16))
+        self.label_3_demand.setObjectName("label_3")
+        self.lineEdit_3_demand = QtWidgets.QLineEdit(self.Demand)
+        self.lineEdit_3_demand.setGeometry(QtCore.QRect(550, 110, 151, 21))
+        self.lineEdit_3_demand.setObjectName("lineEdit_3")
+        self.tabWidget.addTab(self.Demand, "")
         
         self.tabWidget.addTab(self.Peers, "")
         self.tabWidget.addTab(self.Offer, "")
@@ -168,6 +205,9 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def init_demand_data(self):
+        pass
+    
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "PeerToPeerShoping"))
