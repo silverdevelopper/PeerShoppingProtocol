@@ -128,6 +128,20 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.Peers)
         self.pushButton.setGeometry(QtCore.QRect(600, 10, 113, 32))
         self.pushButton.setObjectName("pushButton")
+        
+        self.sendMessageButton = QtWidgets.QPushButton(self.Peers)
+        self.sendMessageButton.setGeometry(QtCore.QRect(600, 200, 113, 32))
+        self.sendMessageButton.setObjectName("sendMessageButton")
+        self.sendMessageButton.clicked.connect(self.send_message)
+
+        self.sendMessageLabel = QtWidgets.QLabel(self.Peers)
+        self.sendMessageLabel.setGeometry(QtCore.QRect(600, 100, 113, 32))
+        self.sendMessageLabel.setObjectName("sendMessageLabel")
+
+        self.sendMessageLineEdit = QtWidgets.QLineEdit(self.Peers)
+        self.sendMessageLineEdit.setGeometry(QtCore.QRect(600, 150, 113, 32))
+        self.sendMessageLineEdit.setObjectName("sendMessageLineEdit")
+
 
         # Offer Tab
         self.tableView_offer: QtWidgets.QTableView = QtWidgets.QTableView(
@@ -330,9 +344,10 @@ class Ui_MainWindow(object):
             self.Demand), _translate("MainWindow", "Demand"))
 
         self.pushButton.setText(_translate("MainWindow", "Delete"))
+        self.sendMessageButton.setText(_translate("MainWindow", "Send Message"))
+        self.sendMessageLabel.setText(_translate("MainWindow", "Message"))
 
     def init_data(self):
-
         all_products = [prod.split("::") for prod in self.peer.list_products()]
         for i,row in enumerate(all_products):
             for j,col in enumerate(row):
@@ -341,7 +356,6 @@ class Ui_MainWindow(object):
                 item.setText(str(all_products[i][j]))
                 self.products_model.setItem(i,j,item)
  
-
     def init_peers_data(self):
         for i, peer_info in enumerate(self.peer.get_peers()):
             peer_info_data_list = [
@@ -363,7 +377,6 @@ class Ui_MainWindow(object):
                 amount= self.lineEdit_3.text(),
                 keywords="")
         self.peer.add_product(product)
-  
 
     def init_demand_data(self):
         for i, d in enumerate(self.peer.demands):
@@ -412,6 +425,21 @@ class Ui_MainWindow(object):
         )
         name = requested_product.name + " demanded aginst " + exchange_p.name
         self.peer.create_demand(name=name,requested_product=requested_product,exchange_product=exchange_p)
+
+    def send_message(self):
+        indexes = self.tableView.selectedIndexes()
+        if len(indexes) == 0:
+            return
+
+        selected_peer_index = self.tableView.selectedIndexes()[0].row()
+        peer = self.peer.get_peers()[selected_peer_index]
+
+        message = self.sendMessageLineEdit.text()
+        self.sendMessageLineEdit.clear()
+
+        is_sent = self.peer.send_message(message,peer.uuid)
+        print("is message sent successfully?", is_sent)
+
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
