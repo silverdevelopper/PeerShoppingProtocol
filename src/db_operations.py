@@ -51,7 +51,7 @@ class DataBase:
                 self.mydb["products"][i] = {
                     "name": product.name,
                     "unit_key": product.unit_key,
-                    "desc":"",
+                    "desc": product.keywords,
                     "amount": product.amount
                 }
                 self.update_db()
@@ -59,7 +59,7 @@ class DataBase:
         self.mydb["products"].append({
             "name": product.name,
             "unit_key": product.unit_key,
-            "desc" : "",
+            "desc" : product.keywords,
             "amount": product.amount
         })
         self.update_db()

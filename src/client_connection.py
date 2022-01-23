@@ -24,7 +24,7 @@ class TrackerConnectionThread(threading.Thread):
         self.client_peer_info = None
 
     def run(self):
-        self.cli_socket.send(f"HE::{self.tracker.uuid}".encode())
+        self.cli_socket.send(f"HE::{self.tracker.uuid}\n".encode())
 
         while self.is_listening:
             request = self.cli_socket.recv(1024).decode().strip()
@@ -33,7 +33,7 @@ class TrackerConnectionThread(threading.Thread):
 
             if not is_understood:
                 try:
-                    self.cli_socket.send("ER".encode())
+                    self.cli_socket.send("ER\n".encode())
                 except Exception as e:
                     logging.error(e)
                     print(e)
@@ -41,14 +41,21 @@ class TrackerConnectionThread(threading.Thread):
                     # raise Exception(str(e)+"\n Request:"+request)
 
     def parse_request(self, request: str):
-        request_type = request.split("::")[0]
+        request_type, *request_tokens = request.split("::")
 
         if request_type == "RG":
             peer_info = self.tracker.register(request)
             response = "RN" if peer_info is None else "RO"
-            self.cli_socket.send(response.encode())
+            self.cli_socket.send(f"{response}\n".encode())
             logging.info(f"{self.cli_address[0]} < {response}")
             self.client_peer_info = peer_info
+            return True
+
+        elif request_type == "QU":
+            self.cli_socket.send("BY\n".encode())
+            self.cli_socket.close()
+            logging.info(f"Connection ended with IP: {self.cli_address[0]}\n")
+            self.is_listening = False
             return True
 
         # all requests below this point require peer to be registered
@@ -56,24 +63,31 @@ class TrackerConnectionThread(threading.Thread):
             return False
 
         if request_type == "IG":
-            self.cli_socket.send(f"OG::{self.tracker.uuid}".encode())
-
-        elif request_type == "QU":
-            self.cli_socket.send("BY".encode())
-            self.cli_socket.close()
-            logging.info(f"Connection ended with IP: {self.cli_address[0]}")
-            self.is_listening = False
+            self.cli_socket.send(f"OG::{self.tracker.uuid}\n".encode())
 
         elif request_type == "CS":
             peers = self.tracker.get_peers()
+            counter = 0
 
-            self.cli_socket.send("CO::BEGIN".encode())
+            if len(request_tokens) == 2:
+                geo = request_tokens[0]
+                num = int(request_tokens[1])
+            elif len(request_tokens) == 0:
+                num = -1
+            else:
+                num = 0
+                return False
+
+            self.cli_socket.send("CO::BEGIN\n".encode())
             time.sleep(0.1)
             for peer_info in peers:
-                self.cli_socket.send(peer_info.to_string(prefix="CO").encode())
+                if counter == num:
+                    break
+                self.cli_socket.send(f"{peer_info.to_string(prefix='CO')}\n".encode())
+                counter += 1
                 time.sleep(0.1)
 
-            self.cli_socket.send("CO::END".encode())
+            self.cli_socket.send("CO::END\n".encode())
 
         else:
             return False
@@ -128,14 +142,14 @@ class PeerConnectionThread(TrackerConnectionThread):
             else:
                 return False
 
-            self.cli_socket.send("DO::BEGIN".encode())
+            self.cli_socket.send("DO::BEGIN\n".encode())
             time.sleep(0.1)
 
             for demand in demands_to_send:
-                self.cli_socket.send(demand.to_string("DO").encode())
+                self.cli_socket.send(f"{demand.to_string('DO')}\n".encode())
                 time.sleep(0.1)
 
-            self.cli_socket.send("DO:END".encode())
+            self.cli_socket.send("DO:END\n".encode())
 
         # This is pretty much identical to demands
         elif request_type == "OF":
@@ -163,28 +177,30 @@ class PeerConnectionThread(TrackerConnectionThread):
             else:
                 return False
 
-            self.cli_socket.send("OO::BEGIN".encode())
+            self.cli_socket.send("OO::BEGIN\n".encode())
             time.sleep(0.1)
 
             for offer in offers_to_send:
-                self.cli_socket.send(offer.to_string("OO").encode())
+                self.cli_socket.send(f"{offer.to_string('OO')}\n".encode())
                 time.sleep(0.1)
 
-            self.cli_socket.send("OO:END".encode())
+            self.cli_socket.send("OO:END\n".encode())
 
         elif request_type == "MS":
-            message = request_tokens[0]
+            message = "::".join(request_tokens)
             self.peer.receive_message(message, self.peer.info)
-            self.cli_socket.send("MO".encode())
+            self.cli_socket.send("MO\n".encode())
 
         elif request_type == "SB":
             mode = request_tokens[0]
             if mode == "T":
                 self.peer.add_subscriber(self.client_peer_info.uuid)
+                self.cli_socket.send("SO\n".encode())
                 logging.info(f"New subscriber {self.client_peer_info.uuid}")
                 print("Subscriber added successfully")
             elif mode == "F":
                 self.peer.remove_subscriber(self.client_peer_info.uuid)
+                self.cli_socket.send("SO\n".encode())
                 logging.info(f"Subscriber removed {self.client_peer_info.uuid}")
                 print("Someone unsubscribed...")
             else:
