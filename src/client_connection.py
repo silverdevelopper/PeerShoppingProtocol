@@ -18,6 +18,7 @@ class TrackerConnectionThread(threading.Thread):
     ):
         threading.Thread.__init__(self)
         self.cli_socket = cli_socket
+        self.cli_socket.settimeout(1)
         self.tracker = tracker
         self.cli_address = cli_address
         self.is_listening = True
@@ -27,21 +28,21 @@ class TrackerConnectionThread(threading.Thread):
         self.cli_socket.send(f"HE::{self.tracker.uuid}\n".encode())
 
         while self.is_listening:
-            request = self.cli_socket.recv(1024).decode().strip()
-            logging.info(f"{self.cli_address[0]} > {request}")
-            is_understood = self.parse_request(request)
-            print(f"{request} --- {self.is_listening}")
+            try:
+                request = self.cli_socket.recv(1024).decode().strip()
+                logging.info(f"{self.cli_address[0]} > {request}")
+                is_understood = self.parse_request(request)
 
-            if not is_understood:
-                try:
-                    self.cli_socket.send("ER\n".encode())
-                except Exception as e:
-                    logging.error(e)
-                    print(e)
-                    self.is_listening = False
-                    # raise Exception(str(e)+"\n Request:"+request)
-
-        print("Thread ENDED")
+                if not is_understood:
+                    try:
+                        self.cli_socket.send("ER\n".encode())
+                    except Exception as e:
+                        logging.error(e)
+                        print(e)
+                        self.is_listening = False
+                        # raise Exception(str(e)+"\n Request:"+request)
+            except socket.timeout:
+                continue
 
     def parse_request(self, request: str):
         request_type, *request_tokens = request.split("::")

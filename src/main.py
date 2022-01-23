@@ -108,7 +108,6 @@ def start_intelligent_home():
 
         while True:
             try:
-                print(killswitch)
                 (client_socket, client_address) = server_socket.accept()
                 #client_socket.settimeout(0.8)
 
@@ -139,9 +138,8 @@ def start_intelligent_home():
                 logging.debug("Tracker shutting down...")
                 return
         
-        print("EXITING")
         for thread in all_threads:
-            thread.parse_request("QU")
+            thread.is_listening = False
             thread.join()
 
 # To start Peer use -a command line
