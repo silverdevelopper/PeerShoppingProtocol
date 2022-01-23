@@ -1,0 +1,42 @@
+{
+  "name": "Manav",
+  "uuid": "9d79bd28-1722-4619-9378-a1cdf398e3cb",
+  "ip": "192.168 .1 .124",
+  "port": 23457,
+  "desc": "Meyve & Sebze",
+  "geoloc": "Istanbul",
+  "products": [
+      {
+          "name": "Mango",
+          "unit_key": "KG",
+          "desc": "mango",
+          "amount": 6
+      },
+      {
+          "name": "Domates",
+          "unit_key": "KG",
+          "desc": "domates",
+          "amount": 12
+      },
+      {
+          "name": "Elma",
+          "unit_key": "KG",
+          "desc": "elma",
+          "amount": 7
+      },
+      {
+          "name": "Muz",
+          "unit_key": "KG",
+          "desc": "ithal muz",
+          "amount": 5
+      },
+      {
+          "name": "Brokoli",
+          "unit_key": "KG",
+          "desc": "brokoli",
+          "amount": 4
+      }
+  ],
+  "peers": {
+  }
+}

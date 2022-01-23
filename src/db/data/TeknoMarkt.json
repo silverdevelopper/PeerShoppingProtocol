@@ -1,0 +1,36 @@
+{
+  "name": "TeknoMarkt",
+  "uuid": "2916aeb7-ea79-4c33-8aec-ac2fadb18d63",
+  "ip": "192.168 .1 .125",
+  "port": 23458,
+  "desc": "Herkes icin elektronik perakendecisi",
+  "geoloc": "Istanbul",
+  "products": [
+      {
+          "name": "Laptop",
+          "unit_key": "adet",
+          "desc": "laptop bilgisayar",
+          "amount": 6
+      },
+      {
+          "name": "TV",
+          "unit_key": "adet",
+          "desc": "4k Full HD TV",
+          "amount": 3
+      },
+      {
+          "name": "Nimtemdo",
+          "unit_key": "KG",
+          "desc": "oyun konsolu",
+          "amount": 4
+      },
+      {
+          "name": "Kamera",
+          "unit_key": "KG",
+          "desc": "Canon kamera",
+          "amount": 6
+      }
+  ],
+  "peers": {
+  }
+}

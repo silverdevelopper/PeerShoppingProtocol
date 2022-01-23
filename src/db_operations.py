@@ -10,9 +10,9 @@ class DataBase:
     Main data for our exists in the /db/data/mydb.json
     """
 
-    def __init__(self) -> None:
+    def __init__(self,db_name = "mydb") -> None:
         self.mydb: str = None
-        self.db_path = "./src/db/data/mydb.json"
+        self.db_path = f"./src/db/data/{db_name}.json"
         if os.path.isfile(self.db_path):
             self.read_db()
         else:

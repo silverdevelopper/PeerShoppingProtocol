@@ -1,0 +1,24 @@
+{
+  "name": "PizzaVizza",
+  "uuid": "c47f5c3d-5eeb-413a-baaf-d6df9cbd1a2d",
+  "ip": "192.168 .1 .123",
+  "port": 23456,
+  "desc": "Sicak pizza hemen kapinizda",
+  "geoloc": "Istanbul",
+  "products": [
+      {
+          "name": "Karisik Pizza",
+          "unit_key": "adet",
+          "desc": "Domates sos, mozzarella peyniri, sucuk, dana jambon, mantar, zeytin, kapya biberi, misir",
+          "amount": 3
+      },
+      {
+          "name": "Margherita Pizza",
+          "unit_key": "adet",
+          "desc": "Domates sos, mozzarella peyniri, kekik, feslegen",
+          "amount": 4
+      }
+  ],
+  "peers": {
+  }
+}

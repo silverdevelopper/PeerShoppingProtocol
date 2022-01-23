@@ -1,0 +1,41 @@
+{
+  "name": "JetgillerAilesi",
+  "uuid": "e2152eaa-3ff5-4600-ad0a-5bf944600273",
+  "ip": "192.168 .1 .126",
+  "port": 23459,
+  "desc": "Ailemizin envanteri",
+  "geoloc": "Istanbul",
+  "products": [
+    {
+      "name": "Telefon",
+      "unit_key": "adet",
+      "desc": "akilli telefon",
+      "amount": 2
+    },
+    {
+      "name": "Kulaklik",
+      "unit_key": "adet",
+      "desc": "mikrofonlu kulaklik",
+      "amount": 3
+    },
+    {
+      "name": "Borek",
+      "unit_key": "KG",
+      "desc": "patatesli, kiymali",
+      "amount": 2
+    },
+    {
+      "name": "Lazer yazici",
+      "unit_key": "adet",
+      "desc": "lazer yazici",
+      "amount": 1
+    },
+    {
+      "name": "Para",
+      "unit_key": "adet",
+      "desc": "para iste",
+      "amount": 2000
+    }
+  ],
+  "peers": {}
+}
