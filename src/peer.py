@@ -30,6 +30,7 @@ class Peer(Tracker):
         self.subscribers: set = set()
         self.block_list: set = set()
         self.blocked_from: set = set()
+        self.on_receive_message_callbacks = []
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -118,8 +119,8 @@ class Peer(Tracker):
         self.__notify_demand_change()
 
     def receive_message(self, message: str, sender: PeerInfo):
-        print("received the following message from", sender.to_string())
-        print(message)
+        for cb in self.on_receive_message_callbacks:
+            cb(message,sender)
 
     def send_message(self, message: str, peer_uuid: str):
         peer_socket = self.connect_to_peer(peer_uuid)
