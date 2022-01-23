@@ -18,3 +18,9 @@ class Offer(BaseModel):
         return self.offered_product.has_keywords(
             keywords
         ) or self.exchange_product.has_keywords(keywords)
+
+    '''
+    It returns Demand Uuid, Demand Name, Requested Product Name, Requested Product Amount,  Exchange Product Name, Exchange Product Name
+    '''
+    def to_list(self):
+        return [self.uuid,self.name,self.offered_product.name,self.offered_product.amount,self.exchange_product.name,self.exchange_product.amount]
