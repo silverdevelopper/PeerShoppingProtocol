@@ -268,7 +268,7 @@ class Ui_MainWindow(object):
                 name=self.lineEdit.text(),
                 unit_key=self.lineEdit_2.text(),
                 amount= self.lineEdit_3.text(),
-                keywords="hebele")
+                keywords="")
         self.peer.add_product(product)
         
 class TableModel(QtCore.QAbstractTableModel):
