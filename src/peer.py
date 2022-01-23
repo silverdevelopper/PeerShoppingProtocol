@@ -42,7 +42,8 @@ class Peer(Tracker):
         return peer_uuid in self.subscribers
 
     def add_peer_to_block_list(self, peer_uuid: str):
-        self.block_list.append(peer_uuid)
+        if peer_uuid not in self.block_list:
+            self.block_list.append(peer_uuid)
         if self.is_subscribed(peer_uuid):
             self.remove_subscriber(peer_uuid)
 
@@ -50,7 +51,8 @@ class Peer(Tracker):
         self.block_list.remove(peer_uuid)
 
     def add_peer_to_blocked_from(self, peer_uuid: str):
-        self.blocked_from.append(peer_uuid)
+        if peer_uuid not in self.blocked_from:
+            self.blocked_from.append(peer_uuid)
         if self.is_subscribed(peer_uuid):
             self.remove_subscriber(peer_uuid)
     
