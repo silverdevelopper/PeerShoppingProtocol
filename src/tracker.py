@@ -22,6 +22,8 @@ class Tracker:
         self.peers: dict[str, PeerInfo] = dict()
         self.info = PeerInfo(uuid, ip, port, geoloc, type, keywords)
         self.uuid = uuid
+        self.on_change_callbacks = []
+
         #self.register(self.info)
         #self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
 
@@ -41,7 +43,7 @@ class Tracker:
         self.peers[peer.uuid] = peer
 
         logging.info(f"Registered {peer.to_string('Peer')}")
-
+        self.run_on_change_callbacks()
         return peer
 
     def get_peers(self):
@@ -125,3 +127,7 @@ class Tracker:
             return None
 
         return peer_socket
+
+    def run_on_change_callbacks(self):
+        for callback in self.on_change_callbacks:
+            callback()

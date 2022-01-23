@@ -2,6 +2,8 @@ import logging
 import os
 import socket
 import sys
+import threading
+from app import AppUi
 from client_connection import PeerConnectionThread, TrackerConnectionThread
 from pathlib import Path
 from db_operations import DataBase
@@ -60,7 +62,9 @@ def start_tracker():
                 return
 
 
+peer = None
 def start_intelligent_home():
+    global peer
     if len(sys.argv) != 4:
         info()
         raise Exception("Command line expect tracker ip and port")
@@ -126,7 +130,15 @@ def main():
     elif sys.argv[1] == "-t":
         start_tracker()
     elif sys.argv[1] == "-a":
-        start_intelligent_home()
+        peer_thread = threading.Thread(target=start_intelligent_home)
+        peer_thread.start()
+
+        while peer is None: 
+            pass
+        app_ui = AppUi(peer)
+        app_ui.run()
+
+        peer_thread.join()
 
 
 if __name__ == "__main__":

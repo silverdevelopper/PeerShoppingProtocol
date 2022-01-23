@@ -12,12 +12,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from db_operations import DataBase
 from models.product import Product
+from peer import Peer
 
 
 class Ui_MainWindow(object):
-    def __init__(self) -> None:
+    def __init__(self,peer:Peer):
         super().__init__()
+        self.peer = peer
         self.selected_product_line = -1
+
+        peer.on_change_callbacks.append(self.init_peers_data)
+        peer.on_change_callbacks.append(self.init_data)
         
         
     def setupUi(self, MainWindow):
@@ -129,20 +134,28 @@ class Ui_MainWindow(object):
                 self.products_model.setItem(i,j,item)
  
     def init_peers_data(self):
-        db = DataBase()
-        data = db.read_peers_as_list()
-        for i,row in enumerate(data):
-            for j,col in enumerate(row):
+        for i, peer_info in enumerate(self.peer.get_peers()):
+            peer_info_data_list = [
+                peer_info.keywords,
+                peer_info.uuid,
+                peer_info.ip,
+                peer_info.port,
+            ]
+            for j, col in enumerate(peer_info_data_list):
                 item = QtGui.QStandardItem()
                 item.setToolTip(str(i))
-                item.setText(str(data[i][j]))
+                item.setText(str(col))
                 self.peers_model.setItem(i,j,item)   
                     
     def save_edit_products(self):
         db = DataBase()
-        data = db.read_peers_as_list()
-        db.save_edit_products(Product(name = self.lineEdit.text(),unit_key= self.lineEdit_2.text(),amount= self.lineEdit_3.text()))
-        print(self.lineEdit.text(),self.lineEdit_2.text(),self.lineEdit_3.text()," saved..")
+        db.save_edit_products(
+            Product(
+                name=self.lineEdit.text(),
+                unit_key=self.lineEdit_2.text(),
+                amount= self.lineEdit_3.text()
+            )
+        )
         self.init_data()
         
 class TableModel(QtCore.QAbstractTableModel):
