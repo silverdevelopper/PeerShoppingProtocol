@@ -17,6 +17,7 @@ from models.product import Product
 class Ui_MainWindow(object):
     def __init__(self) -> None:
         super().__init__()
+        self.selected_product_line = -1
         
         
     def setupUi(self, MainWindow):
@@ -140,7 +141,7 @@ class Ui_MainWindow(object):
     def save_edit_products(self):
         db = DataBase()
         data = db.read_peers_as_list()
-        db.save_edit_products(Product(self.lineEdit.text(),self.lineEdit_2.text(),self.lineEdit_3.text()))
+        db.save_edit_products(Product(name = self.lineEdit.text(),unit_key= self.lineEdit_2.text(),amount= self.lineEdit_3.text()))
         print(self.lineEdit.text(),self.lineEdit_2.text(),self.lineEdit_3.text()," saved..")
         self.init_data()
         

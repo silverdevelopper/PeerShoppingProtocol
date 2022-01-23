@@ -22,6 +22,18 @@
             "name": "elma",
             "unit_key": "1",
             "amount": "KG"
+        },
+        {
+            "name": "hiyar",
+            "unit_key": "1",
+            "desc": "kisalatalıkraz",
+            "amount": "kg"
+        },
+        {
+            "name": "s\u00fct",
+            "unit_key": "1",
+            "desc": "sütt",
+            "amount": "litre"
         }
     ],
     "peers": {

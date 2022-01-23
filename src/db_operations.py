@@ -50,6 +50,7 @@ class DataBase:
             if p["name"] == product.name:
                 self.mydb["products"][i] = {
                     "name": product.name,
+                    "desc":"",
                     "unit_key": product.unit_key,
                     "amount": product.amount
                 }
@@ -57,6 +58,7 @@ class DataBase:
                 return
         self.mydb["products"].append({
             "name": product.name,
+            "desc" : "",
             "unit_key": product.unit_key,
             "amount": product.amount
         })
