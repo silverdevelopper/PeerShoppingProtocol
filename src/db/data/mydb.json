@@ -1,3 +1,4 @@
+[
 {
     "name": "berkay",
     "uuid": "a490fffd-d198-4661-836a-e2a2a0c057e9",
@@ -45,4 +46,173 @@
             "geoloc": "Adana"
         }
     }
+},
+{
+    "name": "PizzaVizza",
+    "uuid": "c47f5c3d-5eeb-413a-baaf-d6df9cbd1a2d",
+    "ip": "192.168 .1 .123",
+    "port": 23456,
+    "desc": "Sicak pizza hemen kapinizda",
+    "geoloc": "Istanbul",
+    "products": [
+        {
+            "name": "Karisik Pizza",
+            "unit_key": "adet",
+            "desc": "Domates sos, mozzarella peyniri, sucuk, dana jambon, mantar, zeytin, kapya biberi, misir",
+            "amount": 3
+        },
+        {
+            "name": "Margherita Pizza",
+            "unit_key": "adet",
+            "desc": "Domates sos, mozzarella peyniri, kekik, feslegen",
+            "amount": 4
+        }
+    ],
+    "peers": {
+    }
+},
+{
+    "name": "Manav",
+    "uuid": "9d79bd28-1722-4619-9378-a1cdf398e3cb",
+    "ip": "192.168 .1 .124",
+    "port": 23457,
+    "desc": "Meyve & Sebze",
+    "geoloc": "Istanbul",
+    "products": [
+        {
+            "name": "Mango",
+            "unit_key": "KG",
+            "desc": "mango",
+            "amount": 6
+        },
+        {
+            "name": "Domates",
+            "unit_key": "KG",
+            "desc": "domates",
+            "amount": 12
+        },
+        {
+            "name": "Elma",
+            "unit_key": "KG",
+            "desc": "elma",
+            "amount": 7
+        },
+        {
+            "name": "Muz",
+            "unit_key": "KG",
+            "desc": "ithal muz",
+            "amount": 5
+        },
+        {
+            "name": "Brokoli",
+            "unit_key": "KG",
+            "desc": "brokoli",
+            "amount": 4
+        }
+    ],
+    "peers": {
+    }
+},
+{
+    "name": "TeknoMarkt",
+    "uuid": "2916aeb7-ea79-4c33-8aec-ac2fadb18d63",
+    "ip": "192.168 .1 .125",
+    "port": 23458,
+    "desc": "Herkes icin elektronik perakendecisi",
+    "geoloc": "Istanbul",
+    "products": [
+        {
+            "name": "Laptop",
+            "unit_key": "adet",
+            "desc": "laptop bilgisayar",
+            "amount": 6
+        },
+        {
+            "name": "TV",
+            "unit_key": "adet",
+            "desc": "4k Full HD TV",
+            "amount": 3
+        },
+        {
+            "name": "Nimtemdo",
+            "unit_key": "KG",
+            "desc": "oyun konsolu",
+            "amount": 4
+        },
+        {
+            "name": "Kamera",
+            "unit_key": "KG",
+            "desc": "Canon kamera",
+            "amount": 6
+        }
+    ],
+    "peers": {
+    }
+},
+{
+    "name": "JetgillerAilesi",
+    "uuid": "e2152eaa-3ff5-4600-ad0a-5bf944600273",
+    "ip": "192.168 .1 .126",
+    "port": 23459,
+    "desc": "Ailemizin envanteri",
+    "geoloc": "Istanbul",
+    "products": [
+        {
+            "name": "Telefon",
+            "unit_key": "adet",
+            "desc": "akilli telefon",
+            "amount": 2
+        },
+        {
+            "name": "Kulaklik",
+            "unit_key": "adet",
+            "desc": "mikrofonlu kulaklik",
+            "amount": 3
+        },
+        {
+            "name": "Borek",
+            "unit_key": "KG",
+            "desc": "patatesli, kiymali",
+            "amount": 2
+        },
+        {
+            "name": "Lazer yazici",
+            "unit_key": "adet",
+            "desc": "lazer yazici",
+            "amount": 1
+        },
+        {
+            "name": "Para",
+            "unit_key": "adet",
+            "desc": "para iste",
+            "amount": 2000
+        }
+    ],
+    "peers": {
+    }
+},
+{
+    "name": "BilmemneAilesi",
+    "uuid": "1c6ac724-ffbc-4e6a-ad2c-ede779e2d106",
+    "ip": "192.168 .1 .127",
+    "port": 23460,
+    "desc": "Ailemizin buzdolabi",
+    "geoloc": "Istanbul",
+    "products": [
+        {
+            "name": "Para",
+            "unit_key": "adet",
+            "desc": "para iste",
+            "amount": 4000
+        },
+        {
+            "name": "Patates",
+            "unit_key": "KG",
+            "desc": "patates",
+            "amount": 2
+        }
+    ],
+    "peers": {
+    }
 }
+]
