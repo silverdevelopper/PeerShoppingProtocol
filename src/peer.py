@@ -16,18 +16,21 @@ class Peer(Tracker):
         ip: str,
         port: int,
         geoloc: str,
+        products: list = [],
         keywords: str = "",
         demands: list = [],
         offers: list = [],
         trade_history: dict = {},
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
+        self.products = products
         self.demands = demands
         self.offers = offers
         self.trade_history = trade_history
         self.subscribers: set = set()
         self.block_list: set = set()
         self.blocked_from: set = set()
+        self.on_receive_message_callbacks = []
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -72,6 +75,25 @@ class Peer(Tracker):
             return None
         return peer
 
+    def add_product(self, product: Product):
+        #TODO
+        #if product not in self.products:
+        for prod in self.products:
+            if prod.name == product.name:
+                continue
+        else:
+            self.products.append(product)
+        self.run_on_change_callbacks()
+
+    def remove_product(self, product: Product):
+        for prod in self.products:
+            if prod.name == product.name:
+                self.products.remove(product)
+        self.run_on_change_callbacks()
+
+    def list_products(self):
+        return [prod.to_string() for prod in self.products]
+
     def get_offer_by_id(self, offer_id):
         for offer in self.offers:
             if offer.uuid == offer_id:
@@ -97,8 +119,8 @@ class Peer(Tracker):
         self.__notify_demand_change()
 
     def receive_message(self, message: str, sender: PeerInfo):
-        print("received the following message from", sender.to_string())
-        print(message)
+        for cb in self.on_receive_message_callbacks:
+            cb(message,sender)
 
     def send_message(self, message: str, peer_uuid: str):
         peer_socket = self.connect_to_peer(peer_uuid)
