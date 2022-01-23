@@ -7,15 +7,18 @@ class Product(BaseModel):
         name: str = "",
         unit_key: str = "",
         amount: float = 0,
-        keywords: list = [],
+        keywords = [],
     ):
         super().__init__(name, name)
         self.unit_key = unit_key
         self.amount = amount
-        self.keywords = [kw.lower() for kw in keywords]
+
+        if isinstance(keywords,str):
+            keywords = [keywords]
+        self.keywords = keywords
 
     def to_string(self):
-        return f"{self.name}::{self.unit_key}::{self.amount}"
+        return f"{self.name}::{self.unit_key}::{self.amount}::{','.join(self.keywords)}"
 
     def has_keywords(self, keywords: list):
         for keyword in keywords:

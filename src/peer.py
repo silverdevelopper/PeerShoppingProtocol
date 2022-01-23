@@ -16,12 +16,14 @@ class Peer(Tracker):
         ip: str,
         port: int,
         geoloc: str,
+        products: list = [],
         keywords: str = "",
         demands: list = [],
         offers: list = [],
         trade_history: dict = {},
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
+        self.products = products
         self.demands = demands
         self.offers = offers
         self.trade_history = trade_history
@@ -71,6 +73,25 @@ class Peer(Tracker):
         if peer is None or self.is_blocked(peer.uuid):
             return None
         return peer
+
+    def add_product(self, product: Product):
+        #TODO
+        #if product not in self.products:
+        for prod in self.products:
+            if prod.name == product.name:
+                continue
+        else:
+            self.products.append(product)
+        self.run_on_change_callbacks()
+
+    def remove_product(self, product: Product):
+        for prod in self.products:
+            if prod.name == product.name:
+                self.products.remove(product)
+        self.run_on_change_callbacks()
+
+    def list_products(self):
+        return [prod.to_string() for prod in self.products]
 
     def get_offer_by_id(self, offer_id):
         for offer in self.offers:

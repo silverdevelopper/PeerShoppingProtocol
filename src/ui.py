@@ -233,19 +233,12 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Delete"))
     
     def init_data(self):
-        print("init data")
-        try:
-         data = self.db.read_products_as_list()
-        except Exception as e:
-            print(e)
-            print("hata")
-            return
-        for i,row in enumerate(data):
-            print(row)
+        all_products = [prod.split("::") for prod in self.peer.list_products()]
+        for i,row in enumerate(all_products):
             for j,col in enumerate(row):
                 item = QtGui.QStandardItem()
                 item.setToolTip(str(i))
-                item.setText(str(data[i][j]))
+                item.setText(str(all_products[i][j]))
                 self.products_model.setItem(i,j,item)
  
     def init_peers_data(self):
@@ -263,16 +256,12 @@ class Ui_MainWindow(object):
                 self.peers_model.setItem(i,j,item)   
                     
     def save_edit_products(self):
-        p =   Product(
+        product = Product(
                 name=self.lineEdit.text(),
-                unit_key=self.lineEdit_3.text(),
-                amount= self.lineEdit_2.text()
-            )
-        print(p.name,p.unit_key,p.amount)
-        self.db.save_edit_products(
-          p
-        )
-        self.init_data()
+                unit_key=self.lineEdit_2.text(),
+                amount= self.lineEdit_3.text(),
+                keywords="hebele")
+        self.peer.add_product(product)
         
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
