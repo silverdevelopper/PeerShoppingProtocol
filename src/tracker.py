@@ -4,7 +4,7 @@ from models.peer_info import PeerInfo
 from typing import Tuple, Union
 
 
-GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "ec2-3-15-222-217.us-east-2.compute.amazonaws.com ", 23456
+GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "ec2-3-15-222-217.us-east-2.compute.amazonaws.com", 23456
 
 
 class Tracker:
@@ -25,7 +25,7 @@ class Tracker:
         self.on_change_callbacks = []
 
         #self.register(self.info)
-        #self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
+        self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
 
     def register(self, request_or_peer: Union[str, PeerInfo]):
         if isinstance(request_or_peer, PeerInfo):
@@ -88,13 +88,14 @@ class Tracker:
 
         is_ended = False
         while not is_ended:
-            response = tracker_socket.recv(1024).decode().strip()
-            if response == "CO::BEGIN":
-                continue
-            elif response == "CO::END":
-                is_ended = True
-            else:
-                self.register(response)
+            responses = tracker_socket.recv(1024).decode().strip().split("\n")
+            for response in responses:
+                if response == "CO::BEGIN":
+                    continue
+                elif response == "CO::END":
+                    is_ended = True
+                else:
+                    self.register(response)
 
         tracker_socket.close()
         logging.info(f"Fetched peers from global tracker")
