@@ -65,7 +65,7 @@ class Tracker:
             tracker_socket.connect((tracker_ip, tracker_port))
         except Exception as e:
             logging.error(f"Could not connect to global tracker.")
-            print(e)
+            print("Error: ",e)
             tracker_socket.close()
             # raise Exception("Could not connect to global tracker.")
             return
