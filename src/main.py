@@ -3,7 +3,6 @@ import os
 import socket
 import sys
 import threading
-from app import AppUi
 from client_connection import PeerConnectionThread, TrackerConnectionThread
 from pathlib import Path
 from db_operations import DataBase
@@ -162,7 +161,8 @@ def main():
     elif sys.argv[1] == "-a":
         peer_thread = threading.Thread(target=start_intelligent_home)
         peer_thread.start()
-
+        
+        from app import AppUi
         while peer is None: 
             pass
         app_ui = AppUi(peer)

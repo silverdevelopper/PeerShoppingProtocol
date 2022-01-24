@@ -12,4 +12,4 @@ $ python main.py [options: -a -t -gt]
                 /data
         -/src/models
 ## Default Tracker
-IPv4: 13.59.56.189 port: 23456
+Host: ec2-3-15-222-217.us-east-2.compute.amazonaws.com port: 23456
