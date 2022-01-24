@@ -83,10 +83,14 @@ def start_intelligent_home():
     all_threads = []
     port = int(sys.argv[3])
     host = sys.argv[2]
+    dbname = "mydb"
+    
+    if len(sys.argv) == 5:
+        dbname = sys.argv[4]
 
     peer = Peer(uuid4(), host, port, geoloc="Istanbul")
     
-    db = DataBase()
+    db = DataBase(db_name=dbname)
     for raw_peer_info in db.read_peers_as_list():
         name,uuid,ip,port,desc,location = raw_peer_info
         peer_info = PeerInfo(uuid,ip,port,location,"A",keywords=name+desc)
