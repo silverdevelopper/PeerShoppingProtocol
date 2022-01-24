@@ -24,7 +24,6 @@ class Tracker:
         self.uuid = uuid
         self.on_change_callbacks = []
 
-        #self.register(self.info)
         self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
 
     def register(self, request_or_peer: Union[str, PeerInfo]):
@@ -62,10 +61,10 @@ class Tracker:
     def fetch_peers_from_tracker(self, tracker_ip: str, tracker_port: int):
         tracker_socket = socket.socket()
         try:
-            tracker_socket.connect((tracker_ip, tracker_port))
+            tracker_socket.connect((tracker_ip, int(tracker_port)))
         except Exception as e:
             logging.error(f"Could not connect to global tracker.")
-            print("Error: ",e)
+            print("Error: ", e)
             tracker_socket.close()
             # raise Exception("Could not connect to global tracker.")
             return
@@ -107,7 +106,7 @@ class Tracker:
         peer_info = self.get_peer_by_uuid(peer_uuid)
         peer_socket = socket.socket()
         try:
-            peer_socket.connect((peer_info.ip, peer_info.port))
+            peer_socket.connect((peer_info.ip, int(peer_info.port)))
         except Exception as e:
             logging.error(f"Could not connect to {peer_info.to_string('Peer')}")
             peer_socket.close()

@@ -81,8 +81,8 @@ def start_intelligent_home():
         raise Exception("Command line expect tracker ip and port")
 
     all_threads = []
-    port = int(sys.argv[3])
-    host = sys.argv[2]
+    PORT = port = int(sys.argv[3])
+    HOST = host = sys.argv[2]
     dbname = "mydb"
     
     if len(sys.argv) == 5:
