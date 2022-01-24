@@ -4,7 +4,7 @@ from models.peer_info import PeerInfo
 from typing import Tuple, Union
 
 
-GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "13.59.56.189", 23456
+GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "ec2-3-15-222-217.us-east-2.compute.amazonaws.com ", 23456
 
 
 class Tracker:
