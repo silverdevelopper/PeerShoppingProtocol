@@ -76,7 +76,7 @@ peer = None
 def start_intelligent_home():
     global peer
     global killswitch
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 4:
         info()
         raise Exception("Command line expect tracker ip and port")
 

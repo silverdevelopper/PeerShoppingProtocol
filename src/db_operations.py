@@ -12,7 +12,7 @@ class DataBase:
 
     def __init__(self,db_name = "mydb") -> None:
         self.mydb: str = None
-        self.db_path = f"./src/db/data/{db_name}.json"
+        self.db_path = "./src/db/data/{db_name}.json".format(db_name=db_name)
         if os.path.isfile(self.db_path):
             self.read_db()
         else:
