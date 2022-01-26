@@ -2,7 +2,7 @@ import logging
 import socket
 from models.peer_info import PeerInfo
 from typing import Tuple, Union
-
+from uuid import uuid4
 
 GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT = "ec2-3-15-222-217.us-east-2.compute.amazonaws.com", 23456
 
@@ -17,7 +17,7 @@ class Tracker:
         type="T",
         keywords: str = "",
     ):
-        uuid = "43"
+        #uuid = "43"
         self.socket = socket
         self.peers: dict[str, PeerInfo] = dict()
         self.info = PeerInfo(uuid, ip, port, geoloc, type, keywords)

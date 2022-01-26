@@ -455,7 +455,8 @@ class Ui_MainWindow(object):
 
     def refresh_data(self):
         #self.init_peers_data()
-        self.show_received_message("Hello")
+        #self.show_received_message()
+        pass
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
