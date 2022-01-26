@@ -21,6 +21,7 @@ class Peer(Tracker):
         demands: list = [],
         offers: list = [],
         trade_history: dict = {},
+        ui_queue = None
     ):
         super().__init__(uuid, ip, port, geoloc, "A", keywords)
         self.products = products
@@ -31,6 +32,7 @@ class Peer(Tracker):
         self.block_list: set = set()
         self.blocked_from: set = set()
         self.on_receive_message_callbacks = []
+        self.ui_queue = ui_queue
 
     def to_string(self, prefix=""):
         return self.info.to_string(prefix)
@@ -121,8 +123,9 @@ class Peer(Tracker):
         self.run_on_change_callbacks()
 
     def receive_message(self, message: str, sender: PeerInfo):
-        for cb in self.on_receive_message_callbacks:
-            cb(message,sender)
+        self.ui_queue.put(f"{sender.name} says: {message}")
+        #for cb in self.on_receive_message_callbacks:
+         #   cb()
 
     def send_message(self, message: str, peer_uuid: str):
         peer_socket = self.connect_to_peer(peer_uuid)
