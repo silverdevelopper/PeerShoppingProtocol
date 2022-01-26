@@ -8,15 +8,15 @@
   "products": [
       {
           "name": "Para",
-          "unit_key": "adet",
-          "desc": "para iste",
-          "amount": 4000
+          "amount": 4000,
+          "desc": "para",
+          "unit_key": "TL"
       },
       {
           "name": "Patates",
-          "unit_key": "KG",
+          "amount": 2,
           "desc": "patates",
-          "amount": 2
+          "unit_key": "KG"
       }
   ],
   "peers": {

@@ -8,33 +8,33 @@
   "products": [
       {
           "name": "Mango",
-          "unit_key": "KG",
+          "amount": 6,
           "desc": "mango",
-          "amount": 6
+          "unit_key": "KG"
       },
       {
           "name": "Domates",
-          "unit_key": "KG",
+          "amount": 12,
           "desc": "domates",
-          "amount": 12
+          "unit_key": "KG"
       },
       {
           "name": "Elma",
-          "unit_key": "KG",
+          "amount": 7,
           "desc": "elma",
-          "amount": 7
+          "unit_key": "KG"
       },
       {
           "name": "Muz",
-          "unit_key": "KG",
+          "amount": 5,
           "desc": "ithal muz",
-          "amount": 5
+          "unit_key": "KG"
       },
       {
           "name": "Brokoli",
-          "unit_key": "KG",
+          "amount": 4,
           "desc": "brokoli",
-          "amount": 4
+          "unit_key": "KG"
       }
   ],
   "peers": {

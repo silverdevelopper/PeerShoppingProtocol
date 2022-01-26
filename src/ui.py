@@ -88,7 +88,7 @@ class Ui_MainWindow(object):
         self.tableView.setObjectName("tableView")
         self.products_model = QtGui.QStandardItemModel()
         self.products_model.setHorizontalHeaderLabels(
-            ['Name', 'Unit', 'Amount', 'Desc'])
+            ['Name', 'Amount', 'Unit', 'Desc'])
         self.init_data()
         self.tableView.setModel(self.products_model)
 

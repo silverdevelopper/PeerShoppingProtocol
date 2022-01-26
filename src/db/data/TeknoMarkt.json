@@ -8,27 +8,27 @@
   "products": [
       {
           "name": "Laptop",
-          "unit_key": "adet",
+          "amount": 6,
           "desc": "laptop bilgisayar",
-          "amount": 6
+          "unit_key": "adet"
       },
       {
           "name": "TV",
-          "unit_key": "adet",
+          "amount": 3,
           "desc": "4k Full HD TV",
-          "amount": 3
+          "unit_key": "adet"
       },
       {
           "name": "Nimtemdo",
-          "unit_key": "KG",
+          "amount": 4,
           "desc": "oyun konsolu",
-          "amount": 4
+          "unit_key": "adet"
       },
       {
           "name": "Kamera",
-          "unit_key": "KG",
+          "amount": 6,
           "desc": "Canon kamera",
-          "amount": 6
+          "unit_key": "adet"
       }
   ],
   "peers": {
