@@ -46,6 +46,7 @@ class Tracker:
         return peer
 
     def get_peers(self):
+        #self.fetch_peers_from_tracker(GLOBAL_TRACKER_IP, GLOBAL_TRACKER_PORT)
         return self.peers.values()
 
     def get_peer_by_address(self, address: Tuple[str, int]):
