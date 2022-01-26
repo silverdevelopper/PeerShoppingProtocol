@@ -128,6 +128,7 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.Peers)
         self.pushButton.setGeometry(QtCore.QRect(600, 10, 113, 32))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.refresh_data)
         
         self.sendMessageButton = QtWidgets.QPushButton(self.Peers)
         self.sendMessageButton.setGeometry(QtCore.QRect(600, 200, 113, 32))
@@ -343,10 +344,11 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(
             self.Demand), _translate("MainWindow", "Demand"))
 
-        self.pushButton.setText(_translate("MainWindow", "Delete"))
+        self.pushButton.setText(_translate("MainWindow", "Refresh"))
         self.sendMessageButton.setText(_translate("MainWindow", "Send Message"))
         self.sendMessageLabel.setText(_translate("MainWindow", "Message"))
 
+        
     def init_data(self):
         all_products = [prod.split("::") for prod in self.peer.list_products()]
         for i,row in enumerate(all_products):
@@ -440,6 +442,8 @@ class Ui_MainWindow(object):
         is_sent = self.peer.send_message(message,peer.uuid)
         print("is message sent successfully?", is_sent)
 
+    def refresh_data(self):
+        self.init_peers_data()
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):

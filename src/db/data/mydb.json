@@ -62,29 +62,6 @@
     }
   ],
   "peers": {
-    "59a57405-7fa1-4426-b1b3-4e46bba040fb": {
-      "name": "berkay",
-      "uuid": "59a57405-7fa1-4426-b1b3-4e46bba040fb",
-      "ip": "192.168 .1 .1",
-      "port": 2564,
-      "desc": "bu berkay",
-      "geoloc": "Adana"
-    },
-    "1e216b1d-a65f-4681-aca9-db57322a2e4f": {
-      "name": "nur",
-      "uuid": "1e216b1d-a65f-4681-aca9-db57322a2e4f",
-      "ip": "192.168 .1 .1",
-      "port": 2564,
-      "desc": "bu berkay",
-      "geoloc": "Antalya"
-    },
-    "42d50c8b-9e8b-4d3a-a62d-0ea89a16a27b": {
-      "name": "inan",
-      "uuid": "42d50c8b-9e8b-4d3a-a62d-0ea89a16a27b",
-      "ip": "192.168.1.1",
-      "port": 2564,
-      "desc": "bu berkay",
-      "geoloc": "Adana"
-    }
+
   }
 }
