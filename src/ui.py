@@ -16,13 +16,15 @@ from peer import Peer
 from models.demand import Demand
 from models.offer import Offer
 from uuid import uuid4
-
+import queue
 
 class Ui_MainWindow(object):
     def __init__(self, peer: Peer):
         super().__init__()
         self.peer = peer
         self.selected_product_line = -1
+        self.qu = queue.Queue()
+        peer.ui_queue = self.qu
 
         peer.on_change_callbacks.append(self.init_peers_data)
         peer.on_change_callbacks.append(self.init_data)
@@ -36,15 +38,24 @@ class Ui_MainWindow(object):
 
         peer.on_receive_message_callbacks.append(self.show_received_message)
 
-    def show_received_message(self, message:str, sender: PeerInfo):
+    def show_received_message(self):
         dlg = QtWidgets.QMessageBox(self.centralwidget)
         dlg.setWindowTitle("Message Received!")
-        dlg.setText(f"{sender.name} says: {message}")
+        m = self.qu.get()
+       #dlg.setText(f"{sender.name} says: {message}")
+        dlg.setText(f"Message: {m}")
         dlg.exec()
 
         
-
+    def tick(self):
+        if not self.qu.empty():
+            self.show_received_message()
+        
     def setupUi(self, MainWindow):
+        self.timer= QtCore.QTimer()
+        self.timer.timeout.connect(self.tick)
+        self.timer.start(1000)
+        
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -443,7 +454,8 @@ class Ui_MainWindow(object):
         print("is message sent successfully?", is_sent)
 
     def refresh_data(self):
-        self.init_peers_data()
+        #self.init_peers_data()
+        self.show_received_message("Hello")
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
