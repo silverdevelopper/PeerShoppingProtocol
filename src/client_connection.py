@@ -192,8 +192,11 @@ class PeerConnectionThread(TrackerConnectionThread):
 
         elif request_type == "MS":
             message = "::".join(request_tokens)
-            self.peer.receive_message(message, self.peer.info)
             self.cli_socket.send("MO\n".encode())
+            if message[0] == "/":
+                self.parse_request(message[1:])
+            else:
+                self.peer.receive_message(message, self.peer.info)
 
         elif request_type == "SB":
             mode = request_tokens[0]
