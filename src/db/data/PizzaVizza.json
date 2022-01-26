@@ -8,15 +8,15 @@
   "products": [
       {
           "name": "Karisik Pizza",
-          "unit_key": "adet",
+          "amount": 3,
           "desc": "Domates sos, mozzarella peyniri, sucuk, dana jambon, mantar, zeytin, kapya biberi, misir",
-          "amount": 3
+          "unit_key": "adet"
       },
       {
           "name": "Margherita Pizza",
-          "unit_key": "adet",
+          "amount": 4,
           "desc": "Domates sos, mozzarella peyniri, kekik, feslegen",
-          "amount": 4
+          "unit_key": "adet"
       }
   ],
   "peers": {

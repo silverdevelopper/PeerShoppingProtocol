@@ -8,33 +8,33 @@
   "products": [
     {
       "name": "Telefon",
-      "unit_key": "adet",
+      "amount": 2,
       "desc": "akilli telefon",
-      "amount": 2
+      "unit_key": "adet"
     },
     {
       "name": "Kulaklik",
-      "unit_key": "adet",
+      "amount": 3,
       "desc": "mikrofonlu kulaklik",
-      "amount": 3
+      "unit_key": "adet"
     },
     {
       "name": "Borek",
-      "unit_key": "KG",
+      "amount": 2,
       "desc": "patatesli, kiymali",
-      "amount": 2
+      "unit_key": "KG"
     },
     {
       "name": "Lazer yazici",
-      "unit_key": "adet",
+      "amount": 1,
       "desc": "lazer yazici",
-      "amount": 1
+      "unit_key": "adet"
     },
     {
       "name": "Para",
-      "unit_key": "adet",
-      "desc": "para iste",
-      "amount": 2000
+      "amount": 2000,
+      "unit_key": "TL",
+      "desc": "para"
     }
   ],
   "peers": {}
